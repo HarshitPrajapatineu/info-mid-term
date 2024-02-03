@@ -1,0 +1,34 @@
+Client - React
+   Dynamic Content Generator (Redering)
+   - component templates
+    + button
+    + textarea
+    + input
+    + checkbox
+    + radio
+    + container
+        -- center
+        -- side container
+        -- vertical container
+        -- horizontal container
+    + event
+    + validation
+
+Server - Node + Mongo + Redis
+  - Server Decides Flow
+  - Session
+  - Authentication
+  - Authorization
+  - Database
+
+#request:
+    Body:
+    Header:
+        Token:
+        Cors
+
+#response:
+    Data:
+    Design:
+    Status:
+
