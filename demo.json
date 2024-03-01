@@ -1,0 +1,48 @@
+{
+    "design": [
+        {
+            "id": "uname-text",
+            "type": "text",
+            "data": {
+                "name": "username",
+                "label": "Username",
+                "placeholder":"Enter Username",
+                "disabled": false,
+                "required":true
+            }
+        },
+        {
+            "id": "pwd-text",
+            "type": "text",
+            "data": {
+                "label": "Password",
+                "placeholder":"Enter Password",
+                "required":true
+            }
+        },
+        {
+            "id": "err-msg",
+            "type": "span",
+            "data": {
+                "display":"hidden",
+                "label": "Username"
+            }
+        },
+        {
+            "id": "submit",
+            "type": "button",
+            "data": {
+                "action":"submit",
+                "label": "Submit",
+                "disabled": true
+
+            }
+        }
+    ],
+    "data": [],
+    "status": {
+        "code": "200",
+        "messgae": "Success",
+        "stackTrace": null
+    }
+}

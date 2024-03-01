@@ -1,0 +1,44 @@
+{
+    "design": [
+        {
+            "id": "alert",
+            "type": "alert",
+            "data": {
+                "severity": "error",
+                "display": "hidden",
+                "label": "Invalid Data"
+            }
+        },
+        {
+            "id": "username",
+            "type": "textfield",
+            "data": {
+                "name": "username",
+                "label": "Username",
+                "placeholder": "Enter Username",
+                "disabled": false,
+                "required": true
+            }
+        },
+        {
+            "id": "password",
+            "type": "textfield",
+            "data": {
+                "name": "password",
+                "label": "Password",
+                "placeholder": "Enter Password",
+                "required": true
+            }
+        },
+        {
+            "id": "submit",
+            "type": "button",
+            "data": {
+                "type": "submit",
+                "action": "submit",
+                "label": "Submit",
+                "disabled": false
+            }
+        }
+    ]
+}
