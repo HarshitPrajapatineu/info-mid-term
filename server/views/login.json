@@ -1,11 +1,21 @@
 {
     "design": [
         {
+            "id": "heading",
+            "type": "heading",
+            "data": {
+                "name": "login",
+                "label": "Log in",
+                "component": "h1",
+                "variant": "h5"
+            }
+        },
+        {
             "id": "alert",
             "type": "alert",
             "data": {
                 "severity": "error",
-                "display": "hidden",
+                "display": "none",
                 "label": "Invalid Data"
             }
         },

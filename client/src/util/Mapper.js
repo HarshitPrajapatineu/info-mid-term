@@ -1,32 +1,6 @@
-import { Alert, Button, TextField } from "@mui/material";
+import { Alert, Button, TextField, Typography } from "@mui/material";
 
 export const Mapper = (element) => {
-
-
-    switch (element.type) {
-
-        case "textfield":
-            return renderTextField(element)
-
-        case "textarea":
-            return renderTextArea(element)
-
-        case "button":
-            return renderButton(element)
-
-        case "alert":
-
-            return <>
-                <Alert
-                    variant="outlined"
-                    sx={{ display: d.display }}
-                    severity={d.severity}>
-                    {d.label}
-                </Alert>
-            </>
-        default:
-            break;
-    }
 
     const renderTextField = (element) => {
         const d = element.data
@@ -40,7 +14,8 @@ export const Mapper = (element) => {
                 name={d.name}
                 autoComplete={d.name}
                 disabled={d.disabled}
-                autoFocus />
+                key={element.id}
+                />
         </>)
     }
 
@@ -58,6 +33,7 @@ export const Mapper = (element) => {
                 disabled={d.disabled}
                 multiline
                 rows={6}
+                key={element.id}
                 autoFocus />
         </>)
     }
@@ -70,9 +46,58 @@ export const Mapper = (element) => {
                 type={d.type}
                 fullWidth
                 disabled={d.disabled}
+                key={element.id}
                 sx={{ mt: 3, mb: 2 }}>
                 {d.label}
             </Button>
         </>)
     }
+
+    const renderAlert = (element) => {
+        const d = element.data
+        return ( <>
+            <Alert
+                variant="outlined"
+                sx={{ display: d.display }}
+                key={element.id}
+                severity={d.severity}>
+                {d.label}
+            </Alert>
+        </>)
+    }
+
+    const renderHeading = (element) => {
+        const d = element.data
+        return (
+            <Typography 
+            key={element.id}
+            component={d.component} 
+            variant={d.variant}>
+              {d.label}
+            </Typography>
+            )
+    }
+
+    switch (element.type) {
+
+        case "textfield":
+            return renderTextField(element)
+
+        case "textarea":
+            return renderTextArea(element)
+
+        case "button":
+            return renderButton(element)
+
+        case "alert":
+            return renderAlert(element)
+
+        case "heading":
+            return renderHeading(element)
+
+        default:
+            break;
+    }
+
+    
 }

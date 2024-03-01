@@ -4,6 +4,7 @@ import Login from './components/Login/Login'
 import NavBar from './components/NavBar/NavBar'
 import './App.css';
 import ErrorPage from './components/ErrorPage/ErrorPage';
+import Registration from './components/Registration/Registration';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           {/* Define routes */}
           <Route exact path="/" element={<ErrorPage/>} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Registration />} />
           {/* <Route path="/contact" element={<Contact/>} /> */}
           {/* Not found route - should be at the end */}
           <Route element={<ErrorPage/>} />

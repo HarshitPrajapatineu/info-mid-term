@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import './Login.scss';
-import TextField from '@mui/material/TextField';
-import { Box, Button, Container, CssBaseline, Typography } from '@mui/material';
-import { Mapper } from './../../util/Mapper';
+import './Registration.scss';
+import { Box, Container } from '@mui/material';
+import { Mapper } from '../../util/Mapper';
 
-const Login = () => {
+const Registration = () => {
   let [design, setDesign] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5500/api/view/login")
+    fetch("http://localhost:5500/api/view/registration")
       .then(res => res.json())
       .then(data => { setDesign(data.design) });
   }, [])
 
   return (
-    <div className="Login">
+    <div className="Registration">
       <Container component="main" maxWidth="xs">
         <Box
           sx={{
@@ -33,8 +32,8 @@ const Login = () => {
   )
 };
 
-Login.propTypes = {};
+Registration.propTypes = {};
 
-Login.defaultProps = {};
+Registration.defaultProps = {};
 
-export default Login;
+export default Registration;
