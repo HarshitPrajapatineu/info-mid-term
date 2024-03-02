@@ -1,14 +1,14 @@
 
 var User = require('../schemas/user-schema');
-function addNewUser(name, username, password) {
+function addNewUser(user) {
 
-    const user = new User({
-        name: name,
-        username: username,
-        password: password,
+    const usr = new User({
+        name: user.name,
+        username: user.username,
+        password: user.password,
     })
 
-    user.save();
+    usr.save();
 }
 
 function getAllUsers() {

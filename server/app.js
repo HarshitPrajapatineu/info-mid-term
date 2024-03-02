@@ -5,6 +5,7 @@ var cors = require('cors')
 var cookieParser = require('cookie-parser');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/user-controller');
+var bodyParser = require('body-parser');
 
 var app = express();
 var {db} = require('./serivces/database-service');
@@ -13,6 +14,7 @@ const swaggerSpec = require('./swagger-service');
 
 app.use(cors());
 
+app.use(bodyParser.json())
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -22,9 +24,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Serve Swagger documentation
 app.use('/swagger', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 
-app.use('/api', indexRouter);
 
-app.use('/api/users', usersRouter);
+app.use('/api/user', usersRouter);
+app.use('/api', indexRouter);
 
 
 

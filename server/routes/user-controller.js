@@ -1,8 +1,10 @@
 var express = require('express');
-var userManager = require('../managers/user-manager')
-var RS = require('../serivces/response-builder')
+var userManager = require('../managers/user-manager');
+var RS = require('../serivces/response-builder');
 var router = express.Router();
 
+
+var bodyParser = require('body-parser')
 
 /**
  * @openapi
@@ -13,7 +15,9 @@ var router = express.Router();
  *       content: {
  *         "application/json": {
  *           schema: {
- *           }
+ * $ref: "./schema.json"
+ * }
+ *              
  *         }
  *       }
  *      }
@@ -30,17 +34,22 @@ router.get('/', function (req, res, next) {
 
 /**
  * @openapi
- * /api/users/add/:
+ * /api/users/register/:
  *   post:
  *     description: Welcome to swagger-jsdoc!
  *     responses:
  *       200:
  *         description: Returns a mysterious string.
  */
-router.get('/add', function (req, res, next) {
-  
-  userManager.addNewUser('abc', 'abc', '12345', Date.UTC());
-  res.send('respond with a resource');
+router.post('/register', function (req, res, next) {
+  try {
+
+    console.log(req.body);
+    userManager.addNewUser(req.body);
+    res.send('respond with a resource');
+  } catch (error) {
+    console.log(error)
+  }
 });
 
 module.exports = router;

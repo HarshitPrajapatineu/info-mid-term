@@ -32,7 +32,7 @@
         },
         {
             "id": "password",
-            "type": "textfield",
+            "type": "password",
             "data": {
                 "name": "password",
                 "label": "Password",
