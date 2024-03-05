@@ -2,56 +2,96 @@ import React, { useEffect, useState } from 'react';
 import './Registration.scss';
 import { Box, Container } from '@mui/material';
 import { Mapper } from '../../util/Mapper';
+import ApiManager from '../../util/ApiManager';
+import { FETCH_REGISTRATION_VIEW, SAVE_USER } from '../../util/StringConstants';
+
+const API = ApiManager();
 
 const Registration = () => {
   let [design, setDesign] = useState([]);
+  let [compData, setCompData] = useState({});
 
   useEffect(() => {
-    fetch("http://localhost:5500/api/view/registration")
-      .then(res => res.json())
-      .then(data => { setDesign(data.design) });
+    API.get(FETCH_REGISTRATION_VIEW)
+      .then((response) => {
+        console.log(response);
+        setDesign(response?.data?.design)
+      }, (error) => {
+        console.log(error);
+      })
+
   }, [])
 
-  const handleSubmit = (e) => {
-    fetch("http://localhost:5500/api/register",
-      {
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        method: "POST",
-        body: JSON.stringify(prepareData)
-      })
-      .then(function (res) { console.log(res) })
-      .catch(function (err) { console.log(err) });
+
+  const getActionHandler = (res) => {
+    switch (res?.action) {
+      case "submit":
+        return handleSubmit(res?.e);
+      case "oninputchange":
+        return handleInputChange(res?.field, res?.value);
+      default:
+        break;
+    }
+  };
+
+  const handleInputChange = (field, value) => {
+    setCompData({ ...compData, [field]: value })
   }
-  
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const { firstname, lastname, email, password, cnfemail } = compData
+    if (firstname && lastname && email && password && (email === cnfemail)) {
+      API.post(SAVE_USER, prepareData(compData))
+        .then((response) => {
+          setDesign(showError(false, null));
+          if (response.statusText === 'OK') {
+            window.location = "/login"
+          }
+          console.log(response);
+        }, (error) => {
+          console.log(error);
+          setDesign(showError(true, error.message));
+        })
+    } else {
+      setDesign(showError(true, "Incomplete Data"));
+    }
+  }
+
+  const showError = (isShow, msg = null) => {
+    let errElement = design.find(item => item.id === "alert");
+    errElement.data["display"] = isShow ? "flex" : "none";
+    errElement.data["label"] = msg ? msg : "Some Error Occured!";
+    return [...design]
+  }
+
   const prepareData = () => {
+    const { firstname, lastname, email, password } = compData
     return ({
-      username: ''
+      firstname: firstname,
+      lastname: lastname,
+      email: email,
+      password: password
     })
   }
 
   return (
     <div className="Registration">
       <Container component="main" maxWidth="xs">
-          <form method={"POST"} 
-          // onSubmit={handleSubmit}
-          action='http://localhost:5500/api/user/register'
+        <form>
+          <Box
+            sx={{
+              marginTop: 8,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
           >
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          {
-            design && design.map(element => Mapper(element))
-          }
-        </Box>
-          </form>
+            {
+              design && design.map(element => <Mapper element={element} onEvent={(res) => getActionHandler(res)} data={compData} />)
+            }
+          </Box>
+        </form>
       </Container>
     </div>
   )

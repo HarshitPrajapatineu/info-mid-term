@@ -1,6 +1,11 @@
 import { Alert, Button, TextField, Typography } from "@mui/material";
+import { useState } from "react";
 
-export const Mapper = (element, getActionHandler = () => { }) => {
+export const Mapper = ({
+    element, 
+    onEvent = () => { },
+    data    
+}) => {
 
     const renderTextField = () => {
         const d = element.data
@@ -15,6 +20,7 @@ export const Mapper = (element, getActionHandler = () => { }) => {
                 autoComplete={d.name}
                 disabled={d.disabled}
                 key={element.id}
+                onChange={(e) => {onEvent({action:"oninputchange", field: element.id, value: e.target.value});}}
             />
         </>)
     }
@@ -34,6 +40,7 @@ export const Mapper = (element, getActionHandler = () => { }) => {
                 multiline
                 rows={6}
                 key={element.id}
+                onChange={(e) => {onEvent({action:"oninputchange", field: element.id, value: e.target.value});}}
                 autoFocus />
         </>)
     }
@@ -46,7 +53,7 @@ export const Mapper = (element, getActionHandler = () => { }) => {
                 type={d.type}
                 fullWidth
                 disabled={d.disabled}
-                onClick={(e) => getActionHandler(e)}
+                onClick={(e) => {onEvent({action:"submit", e: e})}}
                 key={element.id}
                 sx={{ mt: 3, mb: 2 }}>
                 {d.label}
@@ -59,7 +66,8 @@ export const Mapper = (element, getActionHandler = () => { }) => {
         const d = element.data
         return (<>
             <Alert
-                variant="outlined"
+                variant="filled"
+                style={{width: "92%"}}
                 sx={{ display: d.display }}
                 key={element.id}
                 severity={d.severity}>
@@ -94,6 +102,7 @@ export const Mapper = (element, getActionHandler = () => { }) => {
                     autoComplete={d.name}
                     disabled={d.disabled}
                     key={element.id}
+                    onChange={(e) => {onEvent({action:"oninputchange", field: element.id, value: e.target.value});}}
                     type="password"
                 />
             </>

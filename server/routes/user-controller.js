@@ -1,15 +1,16 @@
 var express = require('express');
 var userManager = require('../managers/user-manager');
 var RS = require('../serivces/response-builder');
+const { authenticateToken } = require('./auth-controller');
+const auth = require('./auth-controller');
 var router = express.Router();
 
 
-var bodyParser = require('body-parser')
 
 /**
  * @openapi
  * /api/users/get/:
- *   post:
+ *   get:
  *     description: Welcome to swagger-jsdoc!
  *     requestBody: {
  *       content: {
@@ -25,7 +26,7 @@ var bodyParser = require('body-parser')
  *       200:
  *         description: List of Users.
  */
-router.get('/', function (req, res, next) {
+router.get('/getAllUsers', function (req, res) {
 
   const users = userManager.getAllUsers();
   res.send(RS.RBData200OK(users));
@@ -43,10 +44,12 @@ router.get('/', function (req, res, next) {
  */
 router.post('/register', function (req, res, next) {
   try {
-
+ 
     console.log(req.body);
-    userManager.addNewUser(req.body);
-    res.send('respond with a resource');
+    const user = userManager.addNewUser(req.body);
+    console.log(user);
+    // res.redirect("/api/view/login");
+    res.send(RS.RBData200OK(user));
   } catch (error) {
     console.log(error)
   }

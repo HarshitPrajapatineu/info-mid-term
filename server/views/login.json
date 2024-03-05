@@ -20,12 +20,12 @@
             }
         },
         {
-            "id": "username",
+            "id": "email",
             "type": "textfield",
             "data": {
-                "name": "username",
-                "label": "Username",
-                "placeholder": "Enter Username",
+                "name": "email",
+                "label": "Email",
+                "placeholder": "Enter Email",
                 "disabled": false,
                 "required": true
             }

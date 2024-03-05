@@ -1,25 +1,17 @@
-
+const { Timestamp } = require('mongodb');
 var User = require('../schemas/user-schema');
-function addNewUser(user) {
 
-    const usr = new User({
-        name: user.name,
-        username: user.username,
-        password: user.password,
-    })
 
-    usr.save();
+function addNewUser(userParam) {
+    return User.createNewUser(userParam);
 }
 
 function getAllUsers() {
+    return User.findAllUser();
+}
 
-    const user = new User({
-        name: name,
-        username: username,
-        password: password,
-    })
-
-    return user.get();
+function getUserById() {
+    return User.findAllUser();
 }
 
 module.exports = {addNewUser, getAllUsers};

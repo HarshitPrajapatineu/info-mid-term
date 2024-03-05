@@ -5,12 +5,14 @@ var cors = require('cors')
 var cookieParser = require('cookie-parser');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/user-controller');
+var authRouter = require('./routes/auth-controller');
 var bodyParser = require('body-parser');
 
 var app = express();
 var {db} = require('./serivces/database-service');
 const swaggerUI = require('swagger-ui-express');
 const swaggerSpec = require('./swagger-service');
+const { authenticateToken } = require('./serivces/auth-service');
 
 app.use(cors());
 
@@ -21,10 +23,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(authenticateToken);
+
 // Serve Swagger documentation
 app.use('/swagger', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
-
-
+app.use('/api/auth', authRouter);
 app.use('/api/user', usersRouter);
 app.use('/api', indexRouter);
 

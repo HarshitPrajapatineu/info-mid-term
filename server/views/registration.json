@@ -20,7 +20,7 @@
             }
         },
         {
-            "id": "fname",
+            "id": "firstname",
             "type": "textfield",
             "data": {
                 "name": "fname",
@@ -31,7 +31,7 @@
             }
         },
         {
-            "id": "lname",
+            "id": "lastname",
             "type": "textfield",
             "data": {
                 "name": "lname",
