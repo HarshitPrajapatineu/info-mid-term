@@ -2,7 +2,8 @@ const { ObjectId } = require('mongodb');
 var { mongoose } = require('../serivces/database-service');
 var auth = require('../serivces/auth-service');
 
-const userSchema = new mongoose.Schema({
+
+const userObj = {
     firstname: String,
     lastname: String,
     email: String,
@@ -10,8 +11,10 @@ const userSchema = new mongoose.Schema({
     createdOn: Date,
     modifiedOn: Date,
     modifiedBy: ObjectId,
+    userRole: String,
     IsDeleted: Boolean
-})
+}
+const userSchema = new mongoose.Schema(userObj)
 
 const schema = mongoose.model('Users', userSchema)
 
@@ -43,32 +46,24 @@ const findUserById = (id) => {
     })
 }
 
-const findUserByEmail = (email) => {
-
-    schema.findOne({email: email, IsDeleted: false}, (err, user) => {
-        {
-            if (err) {
-                console.error('Error fetching user:', err);
-                return;
-            }
-            console.log('All users:', user);
-            return user;
-        }
-    })
+async function findUserByEmail (email)  {
+    const user = await  schema.findOne({ email: email }).limit(1).select({_id: 1, email: 1, lastname:1, userRole: 1, password: 1}).lean();
+    return user;
 }
 
-function createNewUser(userParam){
+async function createNewUser(userParam, isAdminCreation = false) {
 
     const user = new schema({
-        fname: userParam.fname,
-        lname: userParam.lname,
+        firstname: userParam.firstname,
+        lastname: userParam.lastname,
         email: userParam.email,
-        password: auth.cryptPassword(userParam.password),
+        password: await auth.cryptPassword(userParam.password),
         createdOn: Date.now(),
         modifiedOn: Date.now(),
-        modifiedBy: null
+        userRole: isAdminCreation? 'admin': 'consumer',
+        modifiedBy: null,
+        IsDeleted: false
     })
-    let newUser = {};
     user.save();
     return user;
 }

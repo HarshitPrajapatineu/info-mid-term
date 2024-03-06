@@ -10,7 +10,7 @@ const ApiManager = () => {
         }
     };
 
-    const post = (endpoint, data) => {
+    const post = (endpoint, data = null) => {
 
         return axios.post(BASE_URL + endpoint, data, options);
     }

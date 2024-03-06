@@ -2,8 +2,8 @@ const { Timestamp } = require('mongodb');
 var User = require('../schemas/user-schema');
 
 
-function addNewUser(userParam) {
-    return User.createNewUser(userParam);
+async function addNewUser(userParam) {
+    return await User.createNewUser(userParam);
 }
 
 function getAllUsers() {

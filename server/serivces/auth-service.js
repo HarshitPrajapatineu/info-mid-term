@@ -1,68 +1,100 @@
 var bcrypt = require('bcrypt');
 const responseBuilder = require('./response-builder');
 
-exports.cryptPassword = function(password, callback) {
-   bcrypt.genSalt(10, function(err, salt) {
-    if (err) 
-      return callback(err);
 
-    bcrypt.hash(password, salt, function(err, hash) {
-      return callback(err, hash);
-    });
-  });
+// Server-side blacklist of revoked tokens
+blacklist = new Set();
+
+// cryptPassword = function(password) {
+//    bcrypt.genSalt(10, function(err, salt) {
+
+//     bcrypt.hash(password, salt, function(err, hash) {
+//       return hash;
+//     });
+//   });
+// };
+
+async function cryptPassword(password) {
+  try {
+    const salt = await bcrypt.genSalt(10); // Using saltRounds = 10
+
+    // Hash the password using the generated salt
+    const hashedPassword = await bcrypt.hash(password, salt);
+    return hashedPassword;
+  } catch (error) {
+    console.error('Error hashing password:', error);
+    throw error; // You might want to handle this error in a different way
+  }
+}
+
+const comparePassword = async function (plainPass, hashword) {
+  const res = await bcrypt.compare(plainPass, hashword)
+  return res;
 };
 
-exports.comparePassword = function(plainPass, hashword, callback) {
-   bcrypt.compare(plainPass, hashword, function(err, isPasswordMatch) {   
-       return err == null ?
-           callback(null, isPasswordMatch) :
-           callback(err);
-   });
-};
+
 
 
 // Middleware to protect routes
-exports.authenticateToken = function(req, res, next) {
+const authenticateToken = function (req, res, next) {
   // Get token from request header
 
   // to bypass public/unprotected routes
-  const nonSecurePaths = 
-  ['/', 
-  '/api/view/registration',
-  '/api/view/login',
-   '/contact'
-  ];
+
   if (nonSecurePaths.includes(req.path)) return next();
 
-  
+
   const token = req.headers['authorization'];
 
   // Check if token is provided
   if (!token) {
-      return res.status(401).json( responseBuilder.RB({ message: 'Unauthorized Access!' }));
+    return res.status(401).json(responseBuilder.RB({ message: 'Unauthorized Access!' }));
+  }
+
+
+  if (blacklist.has(token)) {
+    return res.status(401).json({ message: 'Token revoked' });
   }
 
   // Verify token
   jwt.verify(token, secretKey, (err, decoded) => {
-      if (err) {
-          return res.status(403).json({ message: 'Invalid token' });
-      }
-      req.user = decoded;
-      next();
+    if (err) {
+      return res.status(403).json({ message: 'Invalid token' });
+    }
+    req.user = decoded;
+    next();
   });
 }
+
+const nonSecurePaths =
+  ['/',
+    '/api/view/registration',
+    '/api/view/login',
+    '/api/auth/login',
+    '/api/auth/logout',
+    '/api/user/register',
+    '/contact'
+  ];
 
 
 // function checkLogin (username, password) {
 //     if(checkSession()) {
 //         validateCreds(username, password)
 //     }
-    
+
 // }
 
 // function validateCreds(username, password) {
-    
+
 // }
 // function checkSession() {
 //     return true;
 // }
+
+module.exports =
+{
+  blacklist: blacklist,
+  cryptPassword: cryptPassword,
+  comparePassword: comparePassword,
+  authenticateToken: authenticateToken
+}

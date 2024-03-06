@@ -4,12 +4,16 @@ import { Box, Container } from '@mui/material';
 import { Mapper } from './../../util/Mapper';
 import { AUTH_LOGIN, FETCH_LOGIN_VIEW } from '../../util/StringConstants';
 import ApiManager from '../../util/ApiManager';
+import { useAuth } from '../../util/AuthContext';
 
 const API = ApiManager();
+
 const Login = () => {
+
   let [design, setDesign] = useState([]);
   let [compData, setCompData] = useState({});
 
+  const { sessionData, login } = useAuth();
 
   useEffect(() => {
     API.get(FETCH_LOGIN_VIEW)
@@ -38,22 +42,6 @@ const Login = () => {
     setCompData({ ...compData, [field]: value })
   }
 
-  // const handleLogin = async () => {
-  //   try {
-  //     const response = await axios.post('/login', { username: 'example', password: 'password' });
-  //     const { token } = response.data;
-  //     setToken(token);
-  //     localStorage.setItem('token', token);
-  //   } catch (error) {
-  //     console.error('Login failed:', error);
-  //   }
-  // };
-
-  // const handleLogout = () => {
-  //   setToken('');
-  //   localStorage.removeItem('token');
-  // };
-
   // const handleProtectedRequest = async () => {
   //   try {
   //     const response = await axios.get('/protected', {
@@ -73,14 +61,24 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const { email, password } = compData
-    if (email && password ) {
+
+    if (email && password) {
       API.post(AUTH_LOGIN, prepareData(compData))
         .then((response) => {
           setDesign(showError(false, null));
           if (response.statusText === 'OK') {
+            const { token, userId, userRole, email, lastname  } = response.data;
+            const session = {
+                token: token,
+                userId: userId,
+                userRole: userRole,
+                email: email,
+                lastname: lastname
+              }   
+            login(session);
             window.location = "/dashboard"
           } else {
-          setDesign(showError(true, response.statusText));
+            setDesign(showError(true, response.statusText));
           }
           console.log(response);
         }, (error) => {
@@ -92,7 +90,11 @@ const Login = () => {
     }
   }
 
-  
+  // Log out method
+  const handleLogout = async () => {
+    
+  };
+
   const showError = (isShow, msg = null) => {
     let errElement = design.find(item => item.id === "alert");
     errElement.data["display"] = isShow ? "flex" : "none";

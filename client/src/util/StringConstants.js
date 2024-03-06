@@ -10,6 +10,7 @@ export const FETCH_REGISTRATION_VIEW = "/view/registration";
 
 // --------AUTH---------
 export const AUTH_LOGIN = "/auth/login";
+export const AUTH_LOGOUT = "/auth/logout";
 
 
 // --------USERS---------

@@ -4,10 +4,13 @@ import NavBar from './components/NavBar/NavBar'
 import './App.css';
 import ErrorPage from './components/ErrorPage/ErrorPage';
 import Registration from './components/Registration/Registration';
+import { AuthProvider } from './util/AuthContext';
+import Dashboard from './components/Dashboard/Dashboard';
 
 function App() {
   return (
     <>
+    <AuthProvider>
     <NavBar> </NavBar>
       <BrowserRouter>
         <Routes>
@@ -15,11 +18,13 @@ function App() {
           <Route exact path="/" element={<ErrorPage/>} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Registration />} />
+          <Route path="/register" element={<Dashboard />} />
           {/* <Route path="/contact" element={<Contact/>} /> */}
           {/* Not found route - should be at the end */}
           <Route element={<ErrorPage/>} />
         </Routes>
       </BrowserRouter>
+    </AuthProvider>
     </>
   );
 }

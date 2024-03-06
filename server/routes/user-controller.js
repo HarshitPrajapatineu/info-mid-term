@@ -42,11 +42,11 @@ router.get('/getAllUsers', function (req, res) {
  *       200:
  *         description: Returns a mysterious string.
  */
-router.post('/register', function (req, res, next) {
+router.post('/register', async function (req, res, next) {
   try {
  
     console.log(req.body);
-    const user = userManager.addNewUser(req.body);
+    const user = await userManager.addNewUser(req.body);
     console.log(user);
     // res.redirect("/api/view/login");
     res.send(RS.RBData200OK(user));
