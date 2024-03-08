@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import Divider from '@mui/material/Divider';
@@ -6,14 +6,19 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
-import { List, Toolbar } from '@mui/material';
+import { Icon, List, Toolbar } from '@mui/material';
 
 
 const drawerWidth = 240;
 
-const SidePanel = () => (
+const SidePanel = ({ design }) => {
+
+  return (
+    <>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      />
       <Drawer
         sx={{
           width: drawerWidth,
@@ -28,33 +33,25 @@ const SidePanel = () => (
         <Toolbar />
         <Box sx={{ overflow: 'auto' }}>
           <List>
-            {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>
-                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                  </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-          <Divider />
-          <List>
-            {['All mail', 'Trash', 'Spam'].map((text, index) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>
-                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                  </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItemButton>
-              </ListItem>
+            {design?.data?.itemList.map((item) => (
+              (item.name === "divider") ?
+                <Divider />
+                :
+                <ListItem key={item.name} disablePadding>
+                  <ListItemButton onClick={()=> window.location = "/dashboard/" + item.route}>
+                    <ListItemIcon>
+                      <Icon>{item.icon}</Icon>
+                    </ListItemIcon>
+                    <ListItemText primary={item.label} />
+                  </ListItemButton>
+                </ListItem>
             ))}
           </List>
         </Box>
       </Drawer>
-);
+    </>
+  )
+};
 
 SidePanel.propTypes = {};
 

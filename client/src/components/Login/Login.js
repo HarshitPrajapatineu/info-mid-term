@@ -76,7 +76,7 @@ const Login = () => {
                 lastname: lastname
               }   
             login(session);
-            window.location = "/dashboard"
+            window.location = "/dashboard/feed"
           } else {
             setDesign(showError(true, response.statusText));
           }

@@ -1,0 +1,76 @@
+{
+    "design": [
+        {
+            "id": "heading",
+            "type": "heading",
+            "data": {
+                "name": "register",
+                "label": "Create Post",
+                "component": "h1",
+                "variant": "h5"
+            }
+        },
+        {
+            "id": "alert",
+            "type": "alert",
+            "data": {
+                "severity": "error",
+                "display": "none",
+                "label": "Invalid Data"
+            }
+        },
+        {
+            "id": "title",
+            "type": "textfield",
+            "data": {
+                "name": "title",
+                "label": "Title",
+                "placeholder": "Enter Title",
+                "disabled": false,
+                "required": true
+            }
+        },
+        {
+            "id": "description",
+            "type": "textarea",
+            "data": {
+                "name": "description",
+                "label": "Description",
+                "placeholder": "Enter Description",
+                "disabled": false,
+                "required": true
+            }
+        },
+        {
+            "id": "enablelike",
+            "type": "radiobutton",
+            "data": {
+                "name": "enablelike",
+                "label": "Enable Like",
+                "default": "yes",
+                "options": [
+                    {
+                        "value": "yes",
+                        "label": "Yes"
+                    },
+                    {
+                        "value": "no",
+                        "label": "No"
+                    }
+                ],
+                "disabled": false,
+                "required": true
+            }
+        },
+        {
+            "id": "submit",
+            "type": "button",
+            "data": {
+                "type": "submit",
+                "action": "submit",
+                "label": "Submit",
+                "disabled": false
+            }
+        }
+    ]
+}

@@ -11,22 +11,22 @@ import Separator from './components/Separator/Separator';
 function App() {
   return (
     <>
-    <AuthProvider>
-    <NavBar> </NavBar>
-    <Separator />
-      <BrowserRouter>
-        <Routes>
-          {/* Define routes */}
-          <Route exact path="/" element={<ErrorPage/>} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Registration />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          {/* <Route path="/contact" element={<Contact/>} /> */}
-          {/* Not found route - should be at the end */}
-          <Route element={<ErrorPage/>} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+      <AuthProvider>
+        <NavBar> </NavBar>
+        <Separator />
+        <BrowserRouter>
+          <Routes>
+            {/* Define routes */}
+            <Route exact path="/" element={<ErrorPage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Registration />} />
+            <Route path="/dashboard/*" element={<Dashboard />} />
+            {/* <Route path="/contact" element={<Contact/>} /> */}
+            {/* Not found route - should be at the end */}
+            <Route element={<ErrorPage />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     </>
   );
 }

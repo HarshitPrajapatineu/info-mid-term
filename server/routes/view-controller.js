@@ -24,7 +24,7 @@ router.get('/', function (req, res, next) {
  *       200:
  *         description: Returns a mysterious string.
  */
-router.get('/view/:path', function (req, res, next) {
+router.get('/:path', function (req, res, next) {
 
   let data = null
   fs.readFile('./views/' + req.params.path + '.json', 'utf8', (err, file) => {

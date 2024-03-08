@@ -3,7 +3,7 @@ var express = require('express');
 var path = require('path');
 var cors = require('cors')
 var cookieParser = require('cookie-parser');
-var indexRouter = require('./routes/index');
+var viewRouter = require('./routes/view-controller');
 var usersRouter = require('./routes/user-controller');
 var authRouter = require('./routes/auth-controller');
 var bodyParser = require('body-parser');
@@ -29,7 +29,7 @@ app.use(authenticateToken);
 app.use('/swagger', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 app.use('/api/auth', authRouter);
 app.use('/api/user', usersRouter);
-app.use('/api', indexRouter);
+app.use('/api/view', viewRouter);
 
 
 

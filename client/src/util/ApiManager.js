@@ -1,9 +1,25 @@
 
 import axios from 'axios';
 import { BASE_URL } from './StringConstants';
+import { AuthContext } from './AuthContext';
+import { useContext } from 'react';
 
 const ApiManager = () => {
-    const options = {
+
+
+    // const { sessionData, login } = useContext(AuthContext);
+
+
+    const options = 
+    // sessionData?.token ? 
+    // {
+    //     headers: {
+    //         'Accept': 'application/json',
+    //         'Content-Type': 'application/json',
+    //         'Authorization': sessionData?.token
+    //     }
+    // } :
+    {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'

@@ -1,0 +1,87 @@
+{
+    "design": [
+        {
+            "id": "heading",
+            "type": "heading",
+            "data": {
+                "name": "usereditor",
+                "label": "Edit User Profile",
+                "component": "h1",
+                "variant": "h5"
+            }
+        },
+        {
+            "id": "alert",
+            "type": "alert",
+            "data": {
+                "severity": "error",
+                "display": "none",
+                "label": "Invalid Data"
+            }
+        },
+        {
+            "id": "firstname",
+            "type": "textfield",
+            "data": {
+                "name": "fname",
+                "label": "First Name",
+                "placeholder": "Enter First Name",
+                "disabled": false,
+                "required": true
+            }
+        },
+        {
+            "id": "lastname",
+            "type": "textfield",
+            "data": {
+                "name": "lname",
+                "label": "Last Name",
+                "placeholder": "Enter Last Name",
+                "disabled": false,
+                "required": true
+            }
+        },
+        {
+            "id": "email",
+            "type": "textfield",
+            "data": {
+                "name": "email",
+                "label": "Email",
+                "placeholder": "Enter Email",
+                "disabled": false,
+                "required": true
+            }
+        },
+        {
+            "id": "password",
+            "type": "textfield",
+            "data": {
+                "name": "password",
+                "label": "Password",
+                "placeholder": "Enter Password",
+                "required": true
+            }
+        },
+        {
+            "id": "cnfpassword",
+            "type": "textfield",
+            "data": {
+                "name": "cnfpassword",
+                "label": "Confirm Password",
+                "placeholder": "Confirm Password",
+                "disabled": false,
+                "required": true
+            }
+        },
+        {
+            "id": "submit",
+            "type": "button",
+            "data": {
+                "type": "submit",
+                "action": "submit",
+                "label": "Submit",
+                "disabled": false
+            }
+        }
+    ]
+}

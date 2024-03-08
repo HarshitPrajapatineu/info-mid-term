@@ -1,45 +1,53 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import './Dashboard.scss';
 import SidePanel from '../SidePanel/SidePanel';
-import { Box, Container, Grid, Link, Paper, Toolbar, Typography, toolbarClasses } from '@mui/material';
+import { Box, Container } from '@mui/material';
+import { FETCH_DASHBOARD_VIEW } from '../../util/StringConstants';
+import ApiManager from '../../util/ApiManager';
+import Feed from '../Feed/Feed';
+import PostEditor from '../PostEditor/PostEditor';
+import Profile from '../Profile/Profile';
+import UserRoster from '../UserRoster/UserRoster';
+
+const API = ApiManager();
 
 const Dashboard = () => {
+
+  const [currComp, setcurrComp] = useState('feed')
+  const [design, setDesign] = useState([])
+
+  useEffect(() => {
+    API.get(FETCH_DASHBOARD_VIEW)
+      .then((response) => {
+        setDesign(response?.data?.design)
+      }, (error) => {
+        console.log(error);
+      })
+
+  }, [])
 
 
   return (
     <div className="Dashboard">
-      <Box component="main" maxWidth ="lg" sx={{ display: 'flex' }}>
-        <SidePanel />
+      <Box component="main" maxWidth="lg" sx={{ display: 'flex' }}>
+        <SidePanel design={design.find((item) => item.id === "sidebar")}/>
         <Container component="main" sx={{
           flexGrow: 1,
           height: 'calc(100vh - 64px)',
           overflow: 'auto'
         }}>
-          {/* <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Grid container spacing={3}>
-              {/* Chart }
-              <Grid item xs={12} md={8} lg={9}>
-
-              </Grid>
-              {/* Recent Deposits }
-              <Grid item xs={12} md={4} lg={3}>
-
-              </Grid>
-              {/* Recent Orders }
-              <Grid item xs={12}>
-
-              </Grid>
-            </Grid>
-            <Typography variant="body2" color="text.secondary" align="center" >
-              {'Copyright © '}
-              <Link color="inherit" href="https://mui.com/">
-                Your Website
-              </Link>{' '}
-              {new Date().getFullYear()}
-              {'.'}
-            </Typography>
-          </Container> */}
+          
+        <Routes>
+          {/* Define routes */}
+          <Route path="/feed" element={<Feed />} />
+          <Route path="/posteditor" element={<PostEditor />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/search" element={<UserRoster />} />
+          {/* <Route path="/contact" element={<Contact/>} /> */}
+          {/* Not found route - should be at the end */}
+          <Route path="/" element={<Feed />} />
+        </Routes>
         </Container>
       </Box>
     </div>
