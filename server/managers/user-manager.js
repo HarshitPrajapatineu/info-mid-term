@@ -6,12 +6,16 @@ async function addNewUser(userParam) {
     return await User.createNewUser(userParam);
 }
 
-function getAllUsers() {
-    return User.findAllUser();
+async function getAllUsers() {
+    return await User.findAllUser();
 }
 
-function getUserById() {
-    return User.findAllUser();
+async function getfilteredUsers(filter) {
+    return await User.findfilteredUsers(filter);
 }
 
-module.exports = {addNewUser, getAllUsers};
+async function getUserById() {
+    return await User.findAllUser();
+}
+
+module.exports = {addNewUser, getAllUsers, getfilteredUsers};

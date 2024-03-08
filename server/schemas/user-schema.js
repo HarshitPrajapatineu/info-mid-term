@@ -18,21 +18,27 @@ const userSchema = new mongoose.Schema(userObj)
 
 const schema = mongoose.model('Users', userSchema)
 
-const findAllUser = () => {
-
-    schema.find({}, (err, users) => {
-        {
-            if (err) {
-                console.error('Error fetching users:', err);
-                return;
-            }
-            console.log('All users:', users);
-            return users;
-        }
-    })
+async function findAllUser () {
+    let users;
+    try {
+        users = await schema.find({}).lean();
+    } catch (error) {
+        console.error('Error fetching users:', error);
+    }
+    return users;
 }
 
-const findUserById = (id) => {
+async function findfilteredUsers (filter) {
+    let users;
+    try {
+        users = await schema.find(filter, {IsDeleted: 0 , __v:0}).lean();
+    } catch (error) {
+        console.error('Error fetching users:', error);
+    }
+    return users;
+}
+
+async function findUserById (id) {
 
     schema.findById(id, (err, user) => {
         {
@@ -46,8 +52,8 @@ const findUserById = (id) => {
     })
 }
 
-async function findUserByEmail (email)  {
-    const user = await  schema.findOne({ email: email }).limit(1).select({_id: 1, email: 1, lastname:1, userRole: 1, password: 1}).lean();
+async function findUserByEmail(email) {
+    const user = await schema.findOne({ email: email }).limit(1).select({ _id: 1, email: 1, lastname: 1, userRole: 1, password: 1 }).lean();
     return user;
 }
 
@@ -60,7 +66,7 @@ async function createNewUser(userParam, isAdminCreation = false) {
         password: await auth.cryptPassword(userParam.password),
         createdOn: Date.now(),
         modifiedOn: Date.now(),
-        userRole: isAdminCreation? 'admin': 'consumer',
+        userRole: isAdminCreation ? 'admin' : 'consumer',
         modifiedBy: null,
         IsDeleted: false
     })
@@ -71,6 +77,7 @@ async function createNewUser(userParam, isAdminCreation = false) {
 
 module.exports = {
     findAllUser: findAllUser,
+    findfilteredUsers: findfilteredUsers,
     findUserById: findUserById,
     createNewUser: createNewUser,
     findUserByEmail: findUserByEmail

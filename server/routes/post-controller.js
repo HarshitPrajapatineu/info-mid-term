@@ -42,11 +42,12 @@ router.get('/getAllPosts', function (req, res) {
  *       200:
  *         description: Returns a mysterious string.
  */
-router.post('/save;', async function (req, res, next) {
+router.post('/save', async function (req, res, next) {
   try {
  
     console.log(req.body);
     const post = await postManager.addNewPost(req.body);
+    console.log(req.user);
     console.log(post);
     // res.redirect("/api/view/login");
     res.send(RS.RBData200OK(post));

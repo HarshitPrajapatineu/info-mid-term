@@ -1,5 +1,7 @@
 var bcrypt = require('bcrypt');
 const responseBuilder = require('./response-builder');
+const jwt = require('jsonwebtoken');
+const { SecretKey } = require('../assets/config');
 
 
 // Server-side blacklist of revoked tokens
@@ -57,7 +59,7 @@ const authenticateToken = function (req, res, next) {
   }
 
   // Verify token
-  jwt.verify(token, secretKey, (err, decoded) => {
+  jwt.verify(token, SecretKey, (err, decoded) => {
     if (err) {
       return res.status(403).json({ message: 'Invalid token' });
     }

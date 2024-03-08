@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './Login.scss';
 import { Box, Container } from '@mui/material';
 import { Mapper } from './../../util/Mapper';
 import { AUTH_LOGIN, FETCH_LOGIN_VIEW } from '../../util/StringConstants';
 import ApiManager from '../../util/ApiManager';
-import { useAuth } from '../../util/AuthContext';
+import { AuthContext } from '../../util/AuthContext';
+import { Navigate } from 'react-router-dom';
 
 const API = ApiManager();
 
@@ -13,9 +14,12 @@ const Login = () => {
   let [design, setDesign] = useState([]);
   let [compData, setCompData] = useState({});
 
-  const { sessionData, login } = useAuth();
+  const { login } = useContext(AuthContext);
 
   useEffect(() => {
+    if (localStorage.getItem("session") && localStorage.getItem("session") != {}) {
+      window.location.href = "/dashboard/feed"
+    }
     API.get(FETCH_LOGIN_VIEW)
       .then((response) => {
         console.log(response);
@@ -42,20 +46,6 @@ const Login = () => {
     setCompData({ ...compData, [field]: value })
   }
 
-  // const handleProtectedRequest = async () => {
-  //   try {
-  //     const response = await axios.get('/protected', {
-  //       headers: {
-  //         Authorization: token
-  //       }
-  //     });
-  //     console.log('Protected data:', response.data);
-  //   } catch (error) {
-  //     console.error('Failed to fetch protected data:', error);
-  //     // Handle token expiration or unauthorized access
-  //   }
-  // };
-
 
   // use Handle Login
   const handleSubmit = (e) => {
@@ -67,16 +57,19 @@ const Login = () => {
         .then((response) => {
           setDesign(showError(false, null));
           if (response.statusText === 'OK') {
-            const { token, userId, userRole, email, lastname  } = response.data;
-            const session = {
-                token: token,
-                userId: userId,
-                userRole: userRole,
-                email: email,
-                lastname: lastname
-              }   
-            login(session);
-            window.location = "/dashboard/feed"
+            const { token, userId, userRole, email, lastname } = response?.data?.data;
+            localStorage.setItem("token", token);
+            localStorage.setItem("userId", userId);
+            localStorage.setItem("userRole", userRole);
+            localStorage.setItem("email", email);
+            localStorage.setItem("lastname", lastname);
+            login({
+              userId: userId,
+              userRole: userRole,
+              email: email,
+              lastname: lastname
+            });
+
           } else {
             setDesign(showError(true, response.statusText));
           }
@@ -84,7 +77,8 @@ const Login = () => {
         }, (error) => {
           console.log(error);
           setDesign(showError(true, error.message));
-        })
+        }).finally(() =>
+          window.location.href = "/dashboard/feed")
     } else {
       setDesign(showError(true, "Incomplete Data"));
     }
@@ -92,7 +86,7 @@ const Login = () => {
 
   // Log out method
   const handleLogout = async () => {
-    
+
   };
 
   const showError = (isShow, msg = null) => {

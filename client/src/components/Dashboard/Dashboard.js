@@ -30,7 +30,7 @@ const Dashboard = () => {
 
   return (
     <div className="Dashboard">
-      <Box component="main" maxWidth="lg" sx={{ display: 'flex' }}>
+      <Box component="main" maxWidth="xl" sx={{ display: 'flex' }}>
         <SidePanel design={design.find((item) => item.id === "sidebar")}/>
         <Container component="main" sx={{
           flexGrow: 1,

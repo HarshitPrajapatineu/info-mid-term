@@ -7,18 +7,17 @@ import { useContext } from 'react';
 const ApiManager = () => {
 
 
-    // const { sessionData, login } = useContext(AuthContext);
-
+    const token = localStorage.getItem("token")
 
     const options = 
-    // sessionData?.token ? 
-    // {
-    //     headers: {
-    //         'Accept': 'application/json',
-    //         'Content-Type': 'application/json',
-    //         'Authorization': sessionData?.token
-    //     }
-    // } :
+    token ? 
+    {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'authorization': token
+        }
+    } :
     {
         headers: {
             'Accept': 'application/json',

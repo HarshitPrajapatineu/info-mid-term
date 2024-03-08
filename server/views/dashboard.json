@@ -21,7 +21,7 @@
                     {
                         "name": "search",
                         "label": "Search",
-                        "route": "userroster",
+                        "route": "search",
                         "icon": "search_icon"
                     },
                     {

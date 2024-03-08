@@ -77,7 +77,7 @@ var router = express.Router();
  *       200:
  *         description: log out.
  */
-router.post('/logout', function (req, res) {
+router.get('/logout', function (req, res) {
 
     const token = req.headers['authorization'];
     if (token) {

@@ -54,7 +54,7 @@ async function createNewPost(postParam) {
             modifiedBy: postParam.userId,
             IsDeleted: false
         })
-        post.save();
+        await post.save();
     } catch (error) {
         console.error('Error creating post:', error);
     }

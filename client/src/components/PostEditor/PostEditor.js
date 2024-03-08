@@ -47,7 +47,7 @@ const PostEditor = () => {
         .then((response) => {
           setDesign(showError(false, null));
           if (response.statusText === 'OK') {
-            window.location = "/dashboard/feed"
+            window.location.href = "/dashboard/feed"
           }
           console.log(response);
         }, (error) => {
@@ -81,7 +81,7 @@ const PostEditor = () => {
         <form>
           <Box
             sx={{
-              marginTop: 8,
+              marginTop: 4,
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',

@@ -1,4 +1,6 @@
-import { Alert, Box, Button, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, Divider, FormControl, FormControlLabel, FormLabel, Icon, Radio, RadioGroup, TextField, Typography } from "@mui/material";
+import { GridToolbarContainer } from "@mui/x-data-grid";
+import { DataGrid, GridActionsCellItem, GridRowEditStopReasons, GridRowModes } from "@mui/x-data-grid";
 import { useState } from "react";
 
 export const Mapper = ({
@@ -6,6 +8,12 @@ export const Mapper = ({
     onEvent = () => { },
     data
 }) => {
+
+
+    const [value, setValue] = useState(element?.data?.default);
+
+    const [rows, setRows] = useState();
+    const [rowModesModel, setRowModesModel] = useState({});
 
     const renderTextField = () => {
         const d = element.data
@@ -109,6 +117,14 @@ export const Mapper = ({
         )
     }
 
+    const renderDivider = () => {
+        return (
+            <>
+                <Divider />
+            </>
+        )
+    }
+
     const renderRadioButtonGroup = () => {
         const d = element.data
         return (
@@ -121,8 +137,9 @@ export const Mapper = ({
                         }}
                         aria-labelledby={element.id}
                         name="controlled-radio-buttons-group"
-                        value={d.default}
-                        onChange={(e) => { onEvent({ action: "onradiobuttonchange", field: element.id, value: e.target.value }); }}
+                        defaultValue={d.default}
+                        value={value}
+                        onChange={(e) => { setValue(e.target.value); onEvent({ action: "oninputchange", field: element.id, value: e.target.value }); }}
                     >
                         {d && d.options.map((option) =>
                             <FormControlLabel value={option.value} control={<Radio />} label={option.label} />
@@ -131,6 +148,201 @@ export const Mapper = ({
                 </FormControl>
             </Box>
         );
+    }
+
+    const renderTable = () => {
+
+        console.log(data);
+
+        let columns = [];
+
+        const handleRowEditStop = (params, event) => {
+            if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+                event.defaultMuiPrevented = true;
+            }
+        };
+
+        const handleEditClick = (id) => () => {
+            setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+        };
+
+        const handleSaveClick = (id) => () => {
+            setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+        };
+
+        const handleDeleteClick = (id) => () => {
+            setRows(rows.filter((row) => row.id !== id));
+        };
+
+        const handleCancelClick = (id) => () => {
+            setRowModesModel({
+                ...rowModesModel,
+                [id]: { mode: GridRowModes.View, ignoreModifications: true },
+            });
+
+            const editedRow = rows.find((row) => row.id === id);
+            if (editedRow.isNew) {
+                setRows(rows.filter((row) => row.id !== id));
+            }
+        };
+
+        const processRowUpdate = (newRow) => {
+            const updatedRow = { ...newRow, isNew: false };
+            setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+            return updatedRow;
+        };
+
+        const handleRowModesModelChange = (newRowModesModel) => {
+            setRowModesModel(newRowModesModel);
+        };
+
+        function EditToolbar(props) {
+            const { setRows, setRowModesModel } = props;
+
+            const handleClick = () => {
+                const id = 1;
+                setRows((oldRows) => [...oldRows, { id, name: '', age: '', isNew: true }]);
+                setRowModesModel((oldModel) => ({
+                    ...oldModel,
+                    [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
+                }));
+            };
+
+            return (
+                <GridToolbarContainer>
+                    <Button color="primary" startIcon={<Icon>{"add_icon"}</Icon>} onClick={handleClick}>
+                        Add record
+                    </Button>
+                </GridToolbarContainer>
+            );
+        }
+
+
+        const getActions = ({ id }) => {
+            const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+
+            if (isInEditMode) {
+                return [
+                    <GridActionsCellItem
+                        icon={<Icon>{"save_icon"}</Icon>}
+                        label="Save"
+                        sx={{
+                            color: 'primary.main',
+                        }}
+                        onClick={handleSaveClick(id)}
+                    />,
+                    <GridActionsCellItem
+                        icon={<Icon>{"cancel_icon"}</Icon>}
+                        label="Cancel"
+                        className="textPrimary"
+                        onClick={handleCancelClick(id)}
+                        color="inherit"
+                    />,
+                ];
+            }
+
+            return [
+                <GridActionsCellItem
+                    icon={<Icon>{"edit_icon"}</Icon>}
+                    label="Edit"
+                    className="textPrimary"
+                    onClick={handleEditClick(id)}
+                    color="inherit"
+                />,
+                <GridActionsCellItem
+                    icon={<Icon>{"delete_icon"}</Icon>}
+                    label="Delete"
+                    onClick={handleDeleteClick(id)}
+                    color="inherit"
+                />,
+            ];
+        }
+
+        const createColumns = () => {
+            let columns = [];
+            const cols = Object.keys(data[0]);
+            cols.map((col) => {
+                if (col !== '_id') {
+                    columns.push({
+                        field: col,
+                        headerName: col.toUpperCase(),
+                        type: 'string',
+                        width: 180,
+                        align: 'left',
+                        headerAlign: 'left',
+                        editable: false,
+                    })
+                }
+            });
+            console.log(columns);
+            return columns;
+        }
+        const cols = [
+            { field: 'name', headerName: 'Name', width: 180, editable: true },
+            {
+                field: 'age',
+                headerName: 'Age',
+                type: 'number',
+                width: 80,
+                align: 'left',
+                headerAlign: 'left',
+                editable: true,
+            },
+            {
+                field: 'joinDate',
+                headerName: 'Join date',
+                type: 'date',
+                width: 180,
+                editable: true,
+            },
+            {
+                field: 'role',
+                headerName: 'Department',
+                width: 220,
+                editable: true,
+                type: 'singleSelect',
+                valueOptions: ['Market', 'Finance', 'Development'],
+            },
+            {
+                field: 'actions',
+                type: 'actions',
+                headerName: 'Actions',
+                width: 100,
+
+                cellClassName: 'actions',
+                getActions: getActions({}),
+            },
+        ];
+
+        return <Box
+            sx={{
+                height: 500,
+                width: '100%',
+                '& .actions': {
+                    color: 'text.secondary',
+                },
+                '& .textPrimary': {
+                    color: 'text.primary',
+                },
+            }}
+        >
+            <DataGrid
+                rows={data}
+                columns ={createColumns()}
+                // editMode="row"
+                rowModesModel={rowModesModel}
+                onRowModesModelChange={handleRowModesModelChange}
+                onRowEditStop={handleRowEditStop}
+                processRowUpdate={processRowUpdate}
+                rowSelection
+                slots={{
+                    toolbar: EditToolbar,
+                }}
+                slotProps={{
+                    toolbar: { setRows, setRowModesModel },
+                }}
+            />
+        </Box>
     }
 
     switch (element.type) {
@@ -155,6 +367,12 @@ export const Mapper = ({
 
         case "radiobutton":
             return renderRadioButtonGroup()
+
+        case "datatable":
+            return renderTable()
+
+        case "divider":
+            return renderDivider()
 
         default:
             break;

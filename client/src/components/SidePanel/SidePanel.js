@@ -38,7 +38,7 @@ const SidePanel = ({ design }) => {
                 <Divider />
                 :
                 <ListItem key={item.name} disablePadding>
-                  <ListItemButton onClick={()=> window.location = "/dashboard/" + item.route}>
+                  <ListItemButton onClick={()=> window.location.href = "/dashboard/" + item.route}>
                     <ListItemIcon>
                       <Icon>{item.icon}</Icon>
                     </ListItemIcon>

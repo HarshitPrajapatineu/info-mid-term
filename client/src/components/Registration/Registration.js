@@ -46,7 +46,7 @@ const Registration = () => {
         .then((response) => {
           setDesign(showError(false, null));
           if (response.statusText === 'OK') {
-            window.location = "/login"
+            window.location.href = "/login"
           }
           console.log(response);
         }, (error) => {

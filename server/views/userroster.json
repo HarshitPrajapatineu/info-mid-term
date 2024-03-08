@@ -1,0 +1,51 @@
+{
+    "design": [
+        {
+            "id": "heading",
+            "type": "heading",
+            "data": {
+                "name": "userroster",
+                "label": "User Roster",
+                "component": "h1",
+                "variant": "h5"
+            }
+        },
+        {
+            "id": "searchfield",
+            "type": "textfield",
+            "data": {
+                "name": "search",
+                "label": "Search",
+                "placeholder": "Search by email id",
+                "disabled": false,
+                "required": false
+            }
+        },
+        {
+            "id": "search",
+            "type": "button",
+            "data": {
+                "type": "search",
+                "action": "search",
+                "label": "Search",
+                "disabled": false
+            }
+        },
+        {
+            "id": "divider",
+            "type": "divider",
+            "label": "Divider"
+        },
+        {
+            "id": "usertable",
+            "type": "datatable",
+            "data": {
+                "type": "search",
+                "action": "search",
+                "label": "Search",
+                "disabled": false,
+                "rowselection": "disabled"
+            }
+        }
+    ]
+}

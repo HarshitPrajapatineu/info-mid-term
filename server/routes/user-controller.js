@@ -55,4 +55,32 @@ router.post('/register', async function (req, res, next) {
   }
 });
 
+
+
+/**
+ * @openapi
+ * /api/users/get/:
+ *   get:
+ *     description: Welcome to swagger-jsdoc!
+ *     requestBody: {
+ *       content: {
+ *         "application/json": {
+ *           schema: {
+ * $ref: "./schema.json"
+ * }
+ *              
+ *         }
+ *       }
+ *      }
+ *     responses:
+ *       200:
+ *         description: List of Users.
+ */
+router.post('/getUsers', async function (req, res) {
+
+  const filter = req.body
+  const users = await userManager.getfilteredUsers(filter);
+  res.send(RS.RBData200OK(users));
+});
+
 module.exports = router;

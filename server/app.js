@@ -4,6 +4,7 @@ var path = require('path');
 var cors = require('cors')
 var cookieParser = require('cookie-parser');
 var viewRouter = require('./routes/view-controller');
+var postRouter = require('./routes/post-controller');
 var usersRouter = require('./routes/user-controller');
 var authRouter = require('./routes/auth-controller');
 var bodyParser = require('body-parser');
@@ -30,6 +31,7 @@ app.use('/swagger', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 app.use('/api/auth', authRouter);
 app.use('/api/user', usersRouter);
 app.use('/api/view', viewRouter);
+app.use('/api/post', postRouter);
 
 
 
