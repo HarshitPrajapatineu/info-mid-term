@@ -27,51 +27,6 @@ import { Container } from '@mui/material';
 
 const API = ApiManager();
 
-const roles = ['admin', 'consumer'];
-const randomRole = () => {
-  return randomArrayItem(roles);
-};
-
-const initialRows = [
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 25,
-    joinDate: randomCreatedDate(),
-    role: randomRole(),
-  },
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 36,
-    joinDate: randomCreatedDate(),
-    role: randomRole(),
-  },
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 19,
-    joinDate: randomCreatedDate(),
-    role: randomRole(),
-  },
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 28,
-    joinDate: randomCreatedDate(),
-    role: randomRole(),
-  },
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 23,
-    joinDate: randomCreatedDate(),
-    role: randomRole(),
-  },
-];
-
-
-
 const UserRoster = () => {
 
   let [design, setDesign] = useState([]);
@@ -85,10 +40,47 @@ const UserRoster = () => {
       setDesign(responses[0]?.data?.design)
       setCompData(responses[1]?.data?.data)
     }, (error) => {
+      if (error.response.status === 401) {
+        window.location.href = "/login"
+      }
       console.log(error);
     })
 
   }, [])
+
+
+
+  const getActionHandler = (res) => {
+    switch (res?.action) {
+      case "edit":
+        return handleEditButton(res?.id);
+      case "delete":
+        return handleDeleteButton(res?.id);
+      case "follow":
+        return handleFollowButton(res?.id);
+      case "unfollow":
+        return handleUnfollowButton(res?.id);
+      default:
+        break;
+    }
+  };
+
+  const handleEditButton = (id) => {
+    window.location.href = "/dashboard/usereditor?id=" + id;
+  }
+
+  const handleDeleteButton = (id) => {
+
+  }
+
+  const handleFollowButton = (id) => {
+
+  }
+
+  const handleUnfollowButton = (id) => {
+
+  }
+
 
   return (
     <div className="PostEditor">
@@ -103,7 +95,7 @@ const UserRoster = () => {
             }}
           >
             {
-              design && design.map(element => <Mapper element={element} onEvent={(res) => {}} data={compData} />)
+              design && design.map(element => <Mapper element={element} onEvent={(res) => getActionHandler(res)} data={compData} />)
             }
           </Box>
         </form>

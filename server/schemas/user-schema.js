@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema(userObj)
 
 const schema = mongoose.model('Users', userSchema)
 
-async function findAllUser () {
+async function findAllUser() {
     let users;
     try {
         users = await schema.find({}).lean();
@@ -28,17 +28,17 @@ async function findAllUser () {
     return users;
 }
 
-async function findfilteredUsers (filter) {
+async function findfilteredUsers(filter) {
     let users;
     try {
-        users = await schema.find(filter, {IsDeleted: 0 , __v:0}).lean();
+        users = await schema.find(filter, { IsDeleted: 0, __v: 0, password: 0 }).lean();
     } catch (error) {
         console.error('Error fetching users:', error);
     }
     return users;
 }
 
-async function findUserById (id) {
+async function findUserById(id) {
 
     schema.findById(id, (err, user) => {
         {

@@ -9,6 +9,7 @@ import Feed from '../Feed/Feed';
 import PostEditor from '../PostEditor/PostEditor';
 import Profile from '../Profile/Profile';
 import UserRoster from '../UserRoster/UserRoster';
+import UserEditor from '../UserEditor/UserEditor';
 
 const API = ApiManager();
 
@@ -22,6 +23,9 @@ const Dashboard = () => {
       .then((response) => {
         setDesign(response?.data?.design)
       }, (error) => {
+        if(error.response.status === 401) {
+          window.location.href = "/login"
+        }
         console.log(error);
       })
 
@@ -44,6 +48,7 @@ const Dashboard = () => {
           <Route path="/posteditor" element={<PostEditor />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/search" element={<UserRoster />} />
+          <Route path="/usereditor" element={<UserEditor />} />
           {/* <Route path="/contact" element={<Contact/>} /> */}
           {/* Not found route - should be at the end */}
           <Route path="/" element={<Feed />} />

@@ -16,6 +16,9 @@ const PostEditor = () => {
         console.log(response);
         setDesign(response?.data?.design)
       }, (error) => {
+        if (error.response.status === 401) {
+          window.location.href = "/login"
+        }
         console.log(error);
       })
 
@@ -40,8 +43,11 @@ const PostEditor = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const { title, description, enablelike } = compData;
+    if (!enablelike) {
+      setCompData({ ...compData, enablelike: "yes" })
+    }
 
-    if (title && description && enablelike) {
+    if (title && description) {
 
       API.post(SAVE_POST, prepareData(compData))
         .then((response) => {
@@ -51,7 +57,13 @@ const PostEditor = () => {
           }
           console.log(response);
         }, (error) => {
+          if (error.response.status === 401) {
+            window.location.href = "/login"
+          }
           console.log(error);
+          if (error.response.status === 401) {
+            window.location.href = "/login"
+          }
           setDesign(showError(true, error.message));
         })
     } else {
@@ -69,8 +81,8 @@ const PostEditor = () => {
   const prepareData = () => {
     const { title, description, enablelike } = compData;
     return ({
-      title: title, 
-      description: description, 
+      title: title,
+      description: description,
       enablelike: enablelike
     })
   }

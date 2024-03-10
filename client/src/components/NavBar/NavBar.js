@@ -23,7 +23,7 @@ const NavBar = () => {
       API.get(AUTH_LOGOUT).then(response => {
         // Clear the token from the client-side
         logout();
-        localStorage.removeItem("lastname");
+        localStorage.clear();
         setLastname(null);
       }).finally(() =>
         window.location.href = "/login");
@@ -35,7 +35,6 @@ const NavBar = () => {
 
   const handleLoginClick = () => {
     window.location.href = "/login";
-
   }
 
   const handleRegisterClick = () => {

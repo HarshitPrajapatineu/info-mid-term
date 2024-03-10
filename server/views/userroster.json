@@ -41,7 +41,18 @@
             "type": "datatable",
             "data": {
                 "type": "search",
-                "action": "search",
+                "actions": [
+                    {
+                        "action":"edit",
+                        "label": "Edit",
+                        "icon": "edit_icon"
+                    },
+                    {
+                        "action":"delete",
+                        "label": "Delete",
+                        "icon": "delete_icon"
+                    }
+                ],
                 "label": "Search",
                 "disabled": false,
                 "rowselection": "disabled"

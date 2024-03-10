@@ -73,11 +73,10 @@ const nonSecurePaths =
     '/api/view/registration',
     '/api/view/login',
     // '/api/view/posteditor',
-    '/api/view/dashboard',
+    // '/api/view/dashboard',
     '/api/auth/login',
     '/api/auth/logout',
-    '/api/user/register',
-    '/contact'
+    '/api/user/register'
   ];
 
 

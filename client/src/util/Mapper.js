@@ -1,7 +1,7 @@
 import { Alert, Box, Button, Divider, FormControl, FormControlLabel, FormLabel, Icon, Radio, RadioGroup, TextField, Typography } from "@mui/material";
 import { GridToolbarContainer } from "@mui/x-data-grid";
 import { DataGrid, GridActionsCellItem, GridRowEditStopReasons, GridRowModes } from "@mui/x-data-grid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const Mapper = ({
     element,
@@ -9,10 +9,10 @@ export const Mapper = ({
     data
 }) => {
 
-
     const [value, setValue] = useState(element?.data?.default);
 
-    const [rows, setRows] = useState();
+    const rows = [];
+    const columns = [];
     const [rowModesModel, setRowModesModel] = useState({});
 
     const renderTextField = () => {
@@ -120,7 +120,7 @@ export const Mapper = ({
     const renderDivider = () => {
         return (
             <>
-                <Divider />
+                <Divider orientation="horizontal" variant="fullWidth" />
             </>
         )
     }
@@ -150,58 +150,73 @@ export const Mapper = ({
         );
     }
 
+    const composeColumns = () => {
+        const cols = Object.keys(data[0]);
+        cols.map((col) => {
+            if (col !== '_id') {
+                columns.push({
+                    field: col,
+                    headerName: col.toUpperCase(),
+                    type: 'string',
+                    width: 180,
+                    align: 'left',
+                    headerAlign: 'left',
+                    editable: false,
+                });
+            }
+        });
+        if (element?.data?.actions) {
+            addActionColumn(element?.data?.actions)
+        }
+        console.log(columns);
+        return columns;
+    }
+
+    const addActionColumn = (actions) => {
+        columns.push({
+            field: "actions",
+            headerName: "ACTIONS",
+            type: 'actions',
+            width: 180,
+            align: 'left',
+            cellClassName: 'actions',
+            getActions: ({ id }) => {
+                const acts = [];
+
+                actions.map((action) => {
+                        acts.push(
+                    <GridActionsCellItem
+                        icon={<Icon>{action.icon}</Icon>}
+                        label={action.label}
+                        className="textPrimary"
+                        onClick={() => { onEvent({ action: action?.action, id: id }); }}
+                        color="inherit"
+                    />
+                            )
+                });
+
+                console.log(acts);
+                return acts;
+            }
+        })
+    }
+
+    const composeRows = () => {
+        data.map((row, idx) => {
+            rows.push({ ...row, id: row._id })
+        });
+        console.log(rows);
+    }
+
     const renderTable = () => {
 
         console.log(data);
 
-        let columns = [];
-
-        const handleRowEditStop = (params, event) => {
-            if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-                event.defaultMuiPrevented = true;
-            }
-        };
-
-        const handleEditClick = (id) => () => {
-            setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
-        };
-
-        const handleSaveClick = (id) => () => {
-            setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-        };
-
-        const handleDeleteClick = (id) => () => {
-            setRows(rows.filter((row) => row.id !== id));
-        };
-
-        const handleCancelClick = (id) => () => {
-            setRowModesModel({
-                ...rowModesModel,
-                [id]: { mode: GridRowModes.View, ignoreModifications: true },
-            });
-
-            const editedRow = rows.find((row) => row.id === id);
-            if (editedRow.isNew) {
-                setRows(rows.filter((row) => row.id !== id));
-            }
-        };
-
-        const processRowUpdate = (newRow) => {
-            const updatedRow = { ...newRow, isNew: false };
-            setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-            return updatedRow;
-        };
-
-        const handleRowModesModelChange = (newRowModesModel) => {
-            setRowModesModel(newRowModesModel);
-        };
-
         function EditToolbar(props) {
-            const { setRows, setRowModesModel } = props;
+            const { setRowModesModel } = props;
 
             const handleClick = () => {
                 const id = 1;
-                setRows((oldRows) => [...oldRows, { id, name: '', age: '', isNew: true }]);
                 setRowModesModel((oldModel) => ({
                     ...oldModel,
                     [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
@@ -217,103 +232,6 @@ export const Mapper = ({
             );
         }
 
-
-        const getActions = ({ id }) => {
-            const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-
-            if (isInEditMode) {
-                return [
-                    <GridActionsCellItem
-                        icon={<Icon>{"save_icon"}</Icon>}
-                        label="Save"
-                        sx={{
-                            color: 'primary.main',
-                        }}
-                        onClick={handleSaveClick(id)}
-                    />,
-                    <GridActionsCellItem
-                        icon={<Icon>{"cancel_icon"}</Icon>}
-                        label="Cancel"
-                        className="textPrimary"
-                        onClick={handleCancelClick(id)}
-                        color="inherit"
-                    />,
-                ];
-            }
-
-            return [
-                <GridActionsCellItem
-                    icon={<Icon>{"edit_icon"}</Icon>}
-                    label="Edit"
-                    className="textPrimary"
-                    onClick={handleEditClick(id)}
-                    color="inherit"
-                />,
-                <GridActionsCellItem
-                    icon={<Icon>{"delete_icon"}</Icon>}
-                    label="Delete"
-                    onClick={handleDeleteClick(id)}
-                    color="inherit"
-                />,
-            ];
-        }
-
-        const createColumns = () => {
-            let columns = [];
-            const cols = Object.keys(data[0]);
-            cols.map((col) => {
-                if (col !== '_id') {
-                    columns.push({
-                        field: col,
-                        headerName: col.toUpperCase(),
-                        type: 'string',
-                        width: 180,
-                        align: 'left',
-                        headerAlign: 'left',
-                        editable: false,
-                    })
-                }
-            });
-            console.log(columns);
-            return columns;
-        }
-        const cols = [
-            { field: 'name', headerName: 'Name', width: 180, editable: true },
-            {
-                field: 'age',
-                headerName: 'Age',
-                type: 'number',
-                width: 80,
-                align: 'left',
-                headerAlign: 'left',
-                editable: true,
-            },
-            {
-                field: 'joinDate',
-                headerName: 'Join date',
-                type: 'date',
-                width: 180,
-                editable: true,
-            },
-            {
-                field: 'role',
-                headerName: 'Department',
-                width: 220,
-                editable: true,
-                type: 'singleSelect',
-                valueOptions: ['Market', 'Finance', 'Development'],
-            },
-            {
-                field: 'actions',
-                type: 'actions',
-                headerName: 'Actions',
-                width: 100,
-
-                cellClassName: 'actions',
-                getActions: getActions({}),
-            },
-        ];
-
         return <Box
             sx={{
                 height: 500,
@@ -327,19 +245,16 @@ export const Mapper = ({
             }}
         >
             <DataGrid
-                rows={data}
-                columns ={createColumns()}
+                rows={rows}
+                columns={columns}
                 // editMode="row"
                 rowModesModel={rowModesModel}
-                onRowModesModelChange={handleRowModesModelChange}
-                onRowEditStop={handleRowEditStop}
-                processRowUpdate={processRowUpdate}
-                rowSelection
+
                 slots={{
                     toolbar: EditToolbar,
                 }}
                 slotProps={{
-                    toolbar: { setRows, setRowModesModel },
+                    toolbar: { setRowModesModel },
                 }}
             />
         </Box>
@@ -369,6 +284,8 @@ export const Mapper = ({
             return renderRadioButtonGroup()
 
         case "datatable":
+            composeColumns();
+            composeRows();
             return renderTable()
 
         case "divider":
