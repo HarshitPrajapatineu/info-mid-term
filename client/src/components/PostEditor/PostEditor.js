@@ -16,7 +16,8 @@ const PostEditor = () => {
         console.log(response);
         setDesign(response?.data?.design)
       }, (error) => {
-        if (error.response.status === 401) {
+        if (error.response.status === 401 || error.response.status === 403) {
+          localStorage.clear();
           window.location.href = "/login"
         }
         console.log(error);
@@ -57,11 +58,8 @@ const PostEditor = () => {
           }
           console.log(response);
         }, (error) => {
-          if (error.response.status === 401) {
-            window.location.href = "/login"
-          }
-          console.log(error);
-          if (error.response.status === 401) {
+          if (error.response.status === 401 || error.response.status === 403) {
+            localStorage.clear();
             window.location.href = "/login"
           }
           setDesign(showError(true, error.message));
@@ -100,7 +98,13 @@ const PostEditor = () => {
             }}
           >
             {
-              design && design.map(element => <Mapper element={element} onEvent={(res) => getActionHandler(res)} data={compData} />)
+              design && design.map(element =>
+                <Mapper
+                  element={element}
+                  onEvent={(res) => getActionHandler(res)}
+                  defaultValue={element?.data?.default}
+                  data={compData}
+                />)
             }
           </Box>
         </form>

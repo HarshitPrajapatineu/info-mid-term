@@ -6,14 +6,20 @@ import { useEffect, useState } from "react";
 export const Mapper = ({
     element,
     onEvent = () => { },
-    data
+    data,
+    defaultValue,
+    options
 }) => {
 
-    const [value, setValue] = useState(element?.data?.default);
+    const [value, setValue] = useState(defaultValue);
 
     const rows = [];
     const columns = [];
     const [rowModesModel, setRowModesModel] = useState({});
+
+    const [paginationModel, setPaginationModel] = useState(options?.paginationModel);
+    const [loading, setLoading] = useState(false);
+
 
     const renderTextField = () => {
         const d = element.data
@@ -25,6 +31,7 @@ export const Mapper = ({
                 id={element.id}
                 label={d.label}
                 name={d.name}
+                value={defaultValue}
                 autoComplete={d.name}
                 disabled={d.disabled}
                 key={element.id}
@@ -43,6 +50,7 @@ export const Mapper = ({
                 id={element.id}
                 label={d.label}
                 name={d.name}
+                value={defaultValue}
                 autoComplete={d.name}
                 disabled={d.disabled}
                 multiline
@@ -61,7 +69,7 @@ export const Mapper = ({
                 type={d.type}
                 fullWidth
                 disabled={d.disabled}
-                onClick={(e) => { onEvent({ action: "submit", e: e }) }}
+                onClick={(e) => {e.preventDefault(); onEvent({ action: d.action, e: e }) }}
                 key={element.id}
                 sx={{ mt: 3, mb: 2 }}>
                 {d.label}
@@ -137,7 +145,7 @@ export const Mapper = ({
                         }}
                         aria-labelledby={element.id}
                         name="controlled-radio-buttons-group"
-                        defaultValue={d.default}
+                        defaultValue={defaultValue}
                         value={value}
                         onChange={(e) => { setValue(e.target.value); onEvent({ action: "oninputchange", field: element.id, value: e.target.value }); }}
                     >
@@ -182,17 +190,18 @@ export const Mapper = ({
             cellClassName: 'actions',
             getActions: ({ id }) => {
                 const acts = [];
-
                 actions.map((action) => {
-                        acts.push(
-                    <GridActionsCellItem
-                        icon={<Icon>{action.icon}</Icon>}
-                        label={action.label}
-                        className="textPrimary"
-                        onClick={() => { onEvent({ action: action?.action, id: id }); }}
-                        color="inherit"
-                    />
-                            )
+                    acts.push(
+                        <GridActionsCellItem
+                            icon={<Icon>{action.icon}</Icon>}
+                            label={action.label}
+                            disabled={localStorage.getItem("userId") === id}
+
+                            className="textPrimary"
+                            onClick={() => { onEvent({ action: action?.action, id: id }); }}
+                            color="inherit"
+                        />
+                    )
                 });
 
                 console.log(acts);
@@ -209,9 +218,6 @@ export const Mapper = ({
     }
 
     const renderTable = () => {
-
-        console.log(data);
-
         function EditToolbar(props) {
             const { setRowModesModel } = props;
 
@@ -247,9 +253,13 @@ export const Mapper = ({
             <DataGrid
                 rows={rows}
                 columns={columns}
-                // editMode="row"
                 rowModesModel={rowModesModel}
-
+                pagination
+                pageSizeOptions={[5]}
+                paginationMode="server"
+                loading={loading}
+                rowCount={100}
+                onPaginationModelChange={() => { setPaginationModel(); options?.setPaginationModel() }}
                 slots={{
                     toolbar: EditToolbar,
                 }}

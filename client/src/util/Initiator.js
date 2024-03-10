@@ -12,8 +12,9 @@ export const Initiator = ({
             .then((response) => {
                 setDesign(response?.data?.design)
             }, (error) => {
-                if(error.response.status === 401) {
-                  window.location.href = "/login"
+                if (error.response.status === 401 || error.response.status === 403) {
+                    localStorage.clear();
+                    window.location.href = "/login"
                 }
                 console.log(error);
             })
@@ -23,9 +24,9 @@ export const Initiator = ({
     getViewForPath = () => {
         switch (path) {
             case "a":
-                
+
                 break;
-        
+
             default:
                 break;
         }

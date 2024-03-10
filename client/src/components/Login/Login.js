@@ -25,7 +25,8 @@ const Login = () => {
         console.log(response);
         setDesign(response?.data?.design)
       }, (error) => {
-        if(error.response.status === 401) {
+        if(error.response.status === 401 || error.response.status === 403) {
+          localStorage.clear();
           window.location.href = "/login"
         }
         console.log(error);
@@ -78,7 +79,8 @@ const Login = () => {
           }
           console.log(response);
         }, (error) => {
-          if(error.response.status === 401) {
+          if(error.response.status === 401 || error.response.status === 403) {
+            localStorage.clear();
             window.location.href = "/login"
           }
           console.log(error);

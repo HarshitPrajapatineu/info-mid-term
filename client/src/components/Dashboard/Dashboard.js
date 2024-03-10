@@ -23,7 +23,8 @@ const Dashboard = () => {
       .then((response) => {
         setDesign(response?.data?.design)
       }, (error) => {
-        if(error.response.status === 401) {
+        if (error.response.status === 401 || error.response.status === 403) {
+          localStorage.clear();
           window.location.href = "/login"
         }
         console.log(error);
@@ -35,24 +36,24 @@ const Dashboard = () => {
   return (
     <div className="Dashboard">
       <Box component="main" maxWidth="xl" sx={{ display: 'flex' }}>
-        <SidePanel design={design.find((item) => item.id === "sidebar")}/>
+        <SidePanel design={design.find((item) => item.id === "sidebar")} />
         <Container component="main" sx={{
           flexGrow: 1,
           height: 'calc(100vh - 64px)',
           overflow: 'auto'
         }}>
-          
-        <Routes>
-          {/* Define routes */}
-          <Route path="/feed" element={<Feed />} />
-          <Route path="/posteditor" element={<PostEditor />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/search" element={<UserRoster />} />
-          <Route path="/usereditor" element={<UserEditor />} />
-          {/* <Route path="/contact" element={<Contact/>} /> */}
-          {/* Not found route - should be at the end */}
-          <Route path="/" element={<Feed />} />
-        </Routes>
+
+          <Routes>
+            {/* Define routes */}
+            <Route path="/feed" element={<Feed />} />
+            <Route path="/posteditor" element={<PostEditor />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/search" element={<UserRoster />} />
+            <Route path="/usereditor" element={<UserEditor />} />
+            {/* <Route path="/contact" element={<Contact/>} /> */}
+            {/* Not found route - should be at the end */}
+            <Route path="/" element={<Feed />} />
+          </Routes>
         </Container>
       </Box>
     </div>

@@ -3,7 +3,7 @@ import './Registration.scss';
 import { Box, Container } from '@mui/material';
 import { Mapper } from '../../util/Mapper';
 import ApiManager from '../../util/ApiManager';
-import { FETCH_REGISTRATION_VIEW, SAVE_USER } from '../../util/StringConstants';
+import { FETCH_REGISTRATION_VIEW, REGISTER_USER } from '../../util/StringConstants';
 
 const API = ApiManager();
 
@@ -17,7 +17,8 @@ const Registration = () => {
         console.log(response);
         setDesign(response?.data?.design)
       }, (error) => {
-        if(error.response.status === 401) {
+        if(error.response.status === 401 || error.response.status === 403) {
+          localStorage.clear();
           window.location.href = "/login"
         }
         console.log(error);
@@ -45,7 +46,7 @@ const Registration = () => {
     e.preventDefault();
     const { firstname, lastname, email, password, cnfemail } = compData
     if (firstname && lastname && email && password && (email === cnfemail)) {
-      API.post(SAVE_USER, prepareData(compData))
+      API.post(REGISTER_USER, prepareData(compData))
         .then((response) => {
           setDesign(showError(false, null));
           if (response.statusText === 'OK') {
@@ -53,7 +54,8 @@ const Registration = () => {
           }
           console.log(response);
         }, (error) => {
-          if(error.response.status === 401) {
+          if(error.response.status === 401 || error.response.status === 403) {
+            localStorage.clear();
             window.location.href = "/login"
           }
           console.log(error);

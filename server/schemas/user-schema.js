@@ -29,9 +29,17 @@ async function findAllUser() {
 }
 
 async function findfilteredUsers(filter) {
+    const { searchString, pagination } = filter;
+    const regex = new RegExp(searchString, 'i') // i for case insensitive
     let users;
     try {
-        users = await schema.find(filter, { IsDeleted: 0, __v: 0, password: 0 }).lean();
+        users = await schema.find({
+            $or: [
+                { firstname: { $regex: regex } },
+                { lastname: { $regex: regex } }, 
+                { email: { $regex: regex } } 
+            ]
+        }, { IsDeleted: 0, __v: 0, password: 0 }).skip(pagination?.page * pagination?.pageSize).limit(pagination?.pageSize).lean();
     } catch (error) {
         console.error('Error fetching users:', error);
     }
