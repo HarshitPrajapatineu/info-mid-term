@@ -1,0 +1,46 @@
+{
+    "design": [
+        {
+            "id": "heading",
+            "type": "heading",
+            "data": {
+                "name": "feed",
+                "label": "Feed",
+                "component": "h1",
+                "variant": "h5"
+            }
+        },
+        {
+            "id": "postcardlist",
+            "type": "postcardlist",
+            "data": {
+                "props": [
+                    {
+                        "id": "avatar",
+                        "type": "avatar"
+                    },
+                    {
+                        "id": "title",
+                        "type": "text"
+                    },
+                    {
+                        "id": "date",
+                        "type": "text"
+                    },
+                    {
+                        "id": "description",
+                        "type": "text"
+                    },
+                    {
+                        "id": "like",
+                        "type": "button"
+                    },
+                    {
+                        "id": "edit",
+                        "type": "buuton"
+                    }
+                ]
+            }
+        }
+    ]
+}

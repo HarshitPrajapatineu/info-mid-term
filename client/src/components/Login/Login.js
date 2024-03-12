@@ -61,15 +61,15 @@ const Login = () => {
         .then((response) => {
           setDesign(showError(false, null));
           if (response.statusText === 'OK') {
-            const { token, userId, userRole, email, lastname } = response?.data?.data;
+            const { token, userId, userrole, email, lastname } = response?.data?.data;
             localStorage.setItem("token", token);
             localStorage.setItem("userId", userId);
-            localStorage.setItem("userRole", userRole);
+            localStorage.setItem("userrole", userrole);
             localStorage.setItem("email", email);
             localStorage.setItem("lastname", lastname);
             login({
               userId: userId,
-              userRole: userRole,
+              userrole: userrole,
               email: email,
               lastname: lastname
             });

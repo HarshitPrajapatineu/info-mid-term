@@ -26,9 +26,35 @@ var router = express.Router();
  *       200:
  *         description: List of Posts.
  */
-router.get('/getAllPosts', function (req, res) {
+router.get('/getAllPosts', async function (req, res) {
 
-  const posts = postManager.getAllPosts();
+  const posts = await postManager.getAllPosts();
+  res.send(RS.RBData200OK(posts));
+});
+
+/**
+ * @openapi
+ * /api/post/getFeedData:
+ *   get:
+ *     description: Welcome to swagger-jsdoc!
+ *     requestBody: {
+ *       content: {
+ *         "application/json": {
+ *           schema: {
+ * $ref: "./schema.json"
+ * }
+ *              
+ *         }
+ *       }
+ *      }
+ *     responses:
+ *       200:
+ *         description: List of Posts Based on user session.
+ */
+router.post('/getFeedData', async function (req, res) {
+
+  const userId = req.user.id;
+  const posts = await postManager.getPostsForFeed(userId);
   res.send(RS.RBData200OK(posts));
 });
 
@@ -46,7 +72,7 @@ router.post('/save', async function (req, res, next) {
   try {
  
     console.log(req.body);
-    const post = await postManager.addNewPost(req.body);
+    const post = await postManager.addNewPost(req.body, req.user);
     console.log(req.user);
     console.log(post);
     // res.redirect("/api/view/login");

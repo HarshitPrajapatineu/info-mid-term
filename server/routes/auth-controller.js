@@ -45,13 +45,13 @@ var router = express.Router();
     }
 
     // Generate JWT token
-    const token = jwt.sign({ id: user._id, lastname: user.lastname, role: user.userRole }, SecretKey, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user._id, lastname: user.lastname, role: user.userrole }, SecretKey, { expiresIn: '1h' });
 
     const sessionData = {
         token: token,
         userId: user._id,
         lastname: user.lastname,
-        userRole: user.userRole,
+        userrole: user.userrole,
         email: user.email
     }
 

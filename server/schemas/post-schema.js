@@ -12,7 +12,8 @@ const postObj = {
     modifiedOn: Date,
     modifiedBy: ObjectId,
     postRole: String,
-    IsDeleted: Boolean
+    IsDeleted: Boolean,
+    likedBy: [{ type: ObjectId, ref: 'Users' }]
 }
 const postSchema = new mongoose.Schema(postObj)
 
@@ -41,7 +42,7 @@ async function findPostByUserId(userId) {
     return post;
 }
 
-async function createNewPost(postParam) {
+async function createNewPost(postParam, user) {
     let post;
     try {
         post = new schema({
@@ -49,9 +50,9 @@ async function createNewPost(postParam) {
             description: postParam.description,
             enablelike: postParam.enablelike,
             createdOn: Date.now(),
-            createdBy: postParam.userId,
+            createdBy: user.id,
             modifiedOn: Date.now(),
-            modifiedBy: postParam.userId,
+            modifiedBy: user.id,
             IsDeleted: false
         })
         await post.save();
@@ -61,7 +62,7 @@ async function createNewPost(postParam) {
     return post;
 }
 
-async function updatePost(postParam) {
+async function updatePost(postParam, user) {
     let output;
     try {
         const doc = await schema.findById(postParam._id);
@@ -71,7 +72,7 @@ async function updatePost(postParam) {
             description: postParam.description,
             enablelike: postParam.enablelike,
             modifiedOn: Date.now(),
-            modifiedBy: postParam.userId,
+            modifiedBy: user.id,
         })
 
         console.log(output);
@@ -81,17 +82,15 @@ async function updatePost(postParam) {
     return output;
 }
 
-async function deletePost(postParam) {
+async function deletePost(postParam, user) {
 
     try {
         const doc = await schema.findById(postParam._id);
 
         const output = await doc.update({
-            title: postParam.title,
-            description: postParam.description,
-            enablelike: postParam.enablelike,
             modifiedOn: Date.now(),
-            modifiedBy: postParam.userId,
+            modifiedBy: user.id,
+            IsDeleted: true
         });
     }
     catch (error)  {
@@ -103,11 +102,37 @@ async function deletePost(postParam) {
     return output;
 }
 
+async function getPostCount() {
+    let res;
+    try {
+        return await schema.find({ IsDeleted: false }).countDocuments();
+    } catch (error) {
+        console.error('Error fetching user:', error);
+        return res;
+    }
+}
+
+async function findPostByUserIds(userIds) {
+    let res;
+    try {
+        res = await schema.find(userIds ? { createdBy: { $in: userIds }, IsDeleted: false }: { IsDeleted: false})
+        .sort({createdOn: 1})
+        .limit(10)
+        .lean();
+        return res;
+    } catch (error) {
+        console.error('Error fetching user:', error);
+        return res;
+    }
+}
+
 
 module.exports = {
     findAllPost: findAllPost,
     createNewPost: createNewPost,
     findPostByUserId: findPostByUserId,
     updatePost: updatePost,
-    deletePost: deletePost
+    deletePost: deletePost,
+    getPostCount: getPostCount,
+    findPostByUserIds: findPostByUserIds
 };

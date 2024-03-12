@@ -17,6 +17,7 @@ const UserRoster = () => {
     page: 0,
     pageSize: 5,
   });
+  
   useEffect(() => {
     Promise.all([
       API.get(FETCH_USER_ROSTER_VIEW),
@@ -78,7 +79,7 @@ const UserRoster = () => {
 
   const handleDeleteButton = (id) => {
     Promise.all([
-      API.get(DELETE_USER),
+      API.post(DELETE_USER, {id}),
       API.post(FETCH_USER_ROSTER_DATA, {})
     ]).then((responses) => {
       setCompData(responses[1]?.data?.data)

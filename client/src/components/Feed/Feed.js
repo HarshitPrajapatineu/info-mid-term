@@ -1,37 +1,57 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import './Feed.scss';
+import { Box, Container, Grid, Link, Toolbar, Typography } from '@mui/material';
+import PostCard from '../PostCard/PostCard';
+import ApiManager from '../../util/ApiManager';
+import { Mapper } from '../../util/Mapper';
+import { FETCH_FEED_DATA, FETCH_FEED_VIEW } from '../../util/StringConstants';
 
-const Feed = () => (
-  <div className="Feed">
-    Feed Component
-    
-          {/* <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Grid container spacing={3}>
-              {/* Chart }
-              <Grid item xs={12} md={8} lg={9}>
+const API = ApiManager();
 
-              </Grid>
-              {/* Recent Deposits }
-              <Grid item xs={12} md={4} lg={3}>
+const Feed = () => {
 
-              </Grid>
-              {/* Recent Orders }
-              <Grid item xs={12}>
+  let [design, setDesign] = useState([]);
+  let [compData, setCompData] = useState([]);
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 5,
+  });
+  
+  useEffect(() => {
+    Promise.all([
+      API.get(FETCH_FEED_VIEW),
+      API.post(FETCH_FEED_DATA, {})
+    ]).then((responses) => {
+      setDesign(responses[0]?.data?.design)
+      setCompData(responses[1]?.data?.data)
+    }, (error) => {
+      if (error.response.status === 401 || error.response.status === 403) {
+        localStorage.clear();
+        window.location.href = "/login"
+      }
+      console.log(error);
+    })
 
-              </Grid>
-            </Grid>
-            <Typography variant="body2" color="text.secondary" align="center" >
-              {'Copyright © '}
-              <Link color="inherit" href="https://mui.com/">
-                Your Website
-              </Link>{' '}
-              {new Date().getFullYear()}
-              {'.'}
-            </Typography>
-          </Container> */}
-  </div>
-);
+  }, [])
+
+  return (
+    <div className="Feed">
+      <Container sx={{ mt: 4, mb: 4 }}>
+        <Box alignItems={"center"}>
+
+          {
+            design && design.map(element => <Mapper
+              element={element}
+              data={compData}
+              options={{ paginationModel: paginationModel, setPaginationModel: setPaginationModel }} />)
+
+          }
+        </Box>
+      </Container>
+    </div>
+  )
+};
 
 Feed.propTypes = {};
 

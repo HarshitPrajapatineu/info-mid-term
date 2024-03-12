@@ -52,13 +52,14 @@ const UserEditor = () => {
   }
 
   const handleSubmit = (e) => {
-    const { firstname, lastname, email, password, cnfemail } = compData
-    if (firstname && lastname && email && password && (email === cnfemail)) {
+    const { firstname, lastname, email, password, cnfpassword } = compData
+    if (firstname && lastname && email && 
+      ((!password && !cnfpassword) || ( password && cnfpassword && (password === cnfpassword)))) {
       API.post(UPDATE_USER, prepareData(compData))
         .then((response) => {
           setDesign(showError(false, null));
           if (response.statusText === 'OK') {
-            window.location.href = "/login"
+            window.location.href = "/dashboard/search"
           }
           console.log(response);
         }, (error) => {
@@ -82,11 +83,13 @@ const UserEditor = () => {
   }
 
   const prepareData = () => {
-    const { firstname, lastname, email, password } = compData
+    const { firstname, lastname, email, password,userrole } = compData
     return ({
+      _id: editUserId, 
       firstname: firstname,
       lastname: lastname,
       email: email,
+      userrole:userrole,
       password: password
     })
   }
@@ -103,7 +106,7 @@ const UserEditor = () => {
             }}
           >
             {
-              design && design.map(element => <Mapper element={element} onEvent={(res) => getActionHandler(res)} data={compData[element.id]} />)
+              design && design.map(element => <Mapper element={element} onEvent={(res) => getActionHandler(res)} defaultValue={compData[element.id]} data={compData} />)
             }
           </Box>
         </form>

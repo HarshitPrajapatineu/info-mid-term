@@ -53,6 +53,26 @@
             }
         },
         {
+            "id": "userrole",
+            "type": "dropdown",
+            "data": {
+                "name": "userrole",
+                "label": "User Role",
+                "options": [
+                    {
+                        "value": "consumer",
+                        "label": "Consumer"
+                    },
+                    {
+                        "value": "admin",
+                        "label": "Admin"
+                    }
+                ],
+                "disabled": false,
+                "required": true
+            }
+        },
+        {
             "id": "password",
             "type": "textfield",
             "data": {
