@@ -84,6 +84,33 @@ router.get('/getUserPosts', async function (req, res) {
   res.send(RS.RBData200OK(posts));
 });
 
+/**
+ * @openapi
+ * /api/post/getUserPosts:
+ *   get:
+ *     description: Welcome to swagger-jsdoc!
+ *     requestBody: {
+ *       content: {
+ *         "application/json": {
+ *           schema: {
+ * $ref: "./schema.json"
+ * }
+ *              
+ *         }
+ *       }
+ *      }
+ *     responses:
+ *       200:
+ *         description: List of Posts Based on user session.
+ */
+router.post('/get', async function (req, res) {
+
+  const { id } = req.body;
+  const userId = req.user.id;
+  const posts = await postManager.getPost(id);
+  res.send(RS.RBData200OK(posts));
+});
+
 
 
 /**
@@ -123,6 +150,50 @@ router.post('/updateLike', async function (req, res, next) {
   try {
 
     const post = await postManager.updateLike(req.body, req.user);
+    console.log(post);
+    // res.redirect("/api/view/login");
+    res.send(RS.RBData200OK(post));
+  } catch (error) {
+    console.log(error)
+  }
+});
+
+
+/**
+ * @openapi
+ * /api/post/update/:
+ *   post:
+ *     description: Welcome to swagger-jsdoc!
+ *     responses:
+ *       200:
+ *         description: Returns a mysterious string.
+ */
+router.post('/update', async function (req, res, next) {
+  try {
+
+    const post = await postManager.updatePost(req.body, req.user);
+    console.log(post);
+    // res.redirect("/api/view/login");
+    res.send(RS.RBData200OK(post));
+  } catch (error) {
+    console.log(error)
+  }
+});
+
+
+/**
+ * @openapi
+ * /api/post/delete/:
+ *   post:
+ *     description: Welcome to swagger-jsdoc!
+ *     responses:
+ *       200:
+ *         description: Returns a mysterious string.
+ */
+router.post('/delete', async function (req, res, next) {
+  try {
+    const { id } = req.body;
+    const post = await postManager.deletePost(id, req.user);
     console.log(post);
     // res.redirect("/api/view/login");
     res.send(RS.RBData200OK(post));

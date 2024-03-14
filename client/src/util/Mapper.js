@@ -6,6 +6,17 @@ import PropTypes from 'prop-types';
 import { Select as BaseSelect, selectClasses } from '@mui/base/Select';
 import { Option as BaseOption, optionClasses } from '@mui/base/Option';
 import PostCard from "../components/PostCard/PostCard";
+import StarterKit from "@tiptap/starter-kit";
+import {
+    MenuButtonBold,
+    MenuButtonItalic,
+    MenuControlsContainer,
+    MenuDivider,
+    MenuSelectHeading,
+    RichTextEditor,
+    //   type RichTextEditorRef
+} from "mui-tiptap";
+import { useRef } from "react";
 
 export const Mapper = ({
     element,
@@ -15,7 +26,10 @@ export const Mapper = ({
     options
 }) => {
 
+
+    // const rteRef = useRef < RichTextEditorRef > (null);
     const [value, setValue] = useState(defaultValue);
+    const [compData, setCompData] = useState(data);
 
     const rows = [];
     const columns = [];
@@ -62,6 +76,23 @@ export const Mapper = ({
                 key={element.id}
                 onChange={(e) => { onEvent({ action: "oninputchange", field: element.id, value: e.target.value }); }}
                 autoFocus />
+            {/* <div>
+                <RichTextEditor
+                    ref={rteRef}
+                    extensions={[StarterKit]} // Or any Tiptap extensions you wish!
+                    content="<p>Hello world</p>" // Initial content for the editor
+                    // Optionally include `renderControls` for a menu-bar atop the editor:
+                    renderControls={() => (
+                        <MenuControlsContainer>
+                            <MenuSelectHeading />
+                            <MenuDivider />
+                            <MenuButtonBold />
+                            <MenuButtonItalic />
+                            // Add more controls of your choosing here 
+                        </MenuControlsContainer>
+                    )}
+                />
+            </div> */}
         </>)
     }
 
@@ -132,7 +163,7 @@ export const Mapper = ({
     const renderDivider = () => {
         return (
             <>
-                <Toolbar></Toolbar><Divider></Divider>
+                <Divider></Divider>
             </>
         )
     }
@@ -352,9 +383,9 @@ export const Mapper = ({
     }
 
     const composeColumns = () => {
-        const cols = Object.keys(data[0]);
+        const cols = Object.keys(compData[0]);
         cols.map((col) => {
-            if (col !== '_id') {
+            if (col !== '_id' && col !== 'isFollowed') {
                 columns.push({
                     field: col,
                     headerName: col.toUpperCase(),
@@ -381,36 +412,40 @@ export const Mapper = ({
             width: 100,
             align: 'left',
             cellClassName: 'actions',
-            getActions: ({ id }) => {
+            getActions: (param) => {
                 const acts = [];
                 actions.map((action) => {
-                    acts.push(
-                        // <GridActionsCellItem
-                        //     icon={<Icon>{action.icon}</Icon>}
-                        //     label={action.label}
-                        //     value={action.label}
-                        //     name={action.label}
-                        //     title={action.label}
-                        //     disabled={localStorage.getItem("userId") === id}
+                    // to alt between follow and unfollow button
+                    if ((param?.row?.isFollowed && action?.action !== "follow") ||
+                        (!param?.row?.isFollowed && action?.action !== "unfollow")) {
+                        acts.push(
+                            <GridActionsCellItem
+                                icon={<Icon>{action.icon}</Icon>}
+                                label={action.label}
+                                value={action.label}
+                                name={action.label}
+                                title={action.label}
+                                disabled={localStorage.getItem("userId") === param.id}
 
-                        //     className="textPrimary"
-                        //     onClick={() => { onEvent({ action: action?.action, id: id }); }}
-                        //     color="inherit"
-                        // > {action.label}</GridActionsCellItem>
-                        <Button
-                        variant="contained"
-                        type="submit"
-                        className="textPrimary"
-                        disabled={localStorage.getItem("userId") === id}
-                        onClick={() => { onEvent({ action: action?.action, id: id }); }}
-                        key={element.id}
-                        color="inherit"
-                        sx={{  padding:"2px", fontSize:"10px" }}>
-                            {/* <Icon>{action.icon}</Icon> */}
-                            {action.label}
-        
-                    </Button>
-                    )
+                                className="textPrimary"
+                                onClick={() => { onEvent({ action: action?.action, id: param.id }); }}
+                                color="inherit"
+                            > {action.label}</GridActionsCellItem>
+                            // <Button
+                            //     variant="contained"
+                            //     type="submit"
+                            //     className="textPrimary"
+                            //     disabled={localStorage.getItem("userId") === param.id}
+                            //     onClick={() => { onEvent({ action: action?.action, id: param.id }); }}
+                            //     key={element.id}
+                            //     color="inherit"
+                            //     sx={{ padding: "2px", fontSize: "10px" }}>
+                            //     {/* <Icon>{action.icon}</Icon> */}
+                            //     {action.label}
+
+                            // </Button>
+                        )
+                    }
                 });
 
                 console.log(acts);
@@ -420,7 +455,7 @@ export const Mapper = ({
     }
 
     const composeRows = () => {
-        data.map((row, idx) => {
+        compData.map((row, idx) => {
             rows.push({ ...row, id: row._id })
         });
         console.log(rows);
@@ -457,6 +492,11 @@ export const Mapper = ({
     }
 
     const renderPostCardList = () => {
+
+        const handleDelete = (id) => {
+            setCompData((arr) => arr.filter(item => item._id !== id));
+        }
+
         return (
             <Box
                 sx={{
@@ -467,10 +507,10 @@ export const Mapper = ({
                 render post on iteration of coming data if data changes
                 */}
                 {
-                    console.log(data)}{
-                    data.map((pcard, idx) => {
+                    console.log(compData)}{
+                    compData.map((pcard, idx) => {
                         return (<>
-                            <PostCard key={idx} data={pcard}>
+                            <PostCard onDelete={(id) => handleDelete(id)} key={pcard?._id} data={pcard}>
 
                             </PostCard>
                             <Toolbar variant='dense' ></Toolbar>
@@ -484,23 +524,43 @@ export const Mapper = ({
 
     const renderProfileCard = () => {
         const d = element.data
+        const buttonChipSX = {
+            px: 1,
+            py: 0.5,
+            mr: 2,
+            display: 'inline',
+            bgcolor: '#fff',
+            color: 'grey.800',
+            border: '1px solid',
+            borderColor: 'grey.300',
+            borderRadius: 2,
+            fontSize: '0.875rem',
+            fontWeight: '700',
+        };
+        console.log(compData);
         return (
-            <Card sx={{ height: "200px", display: 'flex' }}>
+            <Card sx={{ height: "200px", display: 'flex', mb: "24px" }}>
 
                 <Box sx={{ display: 'flex', alignItems: 'center', paddingX: "24px" }}>
                     <Avatar sx={{ width: 72, height: 72 }} src="/broken-image.jpg" />
                 </Box>
 
                 <CardContent sx={{ flex: '1 0 auto', alignItems: 'center', paddingY: "48px" }}>
+
                     <Typography component="div" variant="h5">
-                        Live From Space
+                        {compData?.lastname}, {compData?.firstname}
                     </Typography>
                     <Typography variant="subtitle1" color="text.secondary" component="div">
-                        Admin
+                        {compData?.email}
                     </Typography>
-                    <Typography variant="subtitle1" color="text.secondary" component="div">
-                        Email@example.com
+                    <Typography marginBottom={"4px"} variant="subtitle1" color="text.secondary" component="div">
+                        {compData?.userrole}
                     </Typography>
+
+                    <Box component="div" sx={buttonChipSX}>Posts: {compData?.postCount}</Box>
+                    <Box component="div" sx={buttonChipSX}>Followers: {compData?.followerCount}</Box>
+                    <Box component="div" sx={buttonChipSX}>Following: {compData?.followingCount}</Box>
+
                 </CardContent>
 
                 <Box sx={{ display: 'flex', alignItems: 'center', padding: "24px" }}>

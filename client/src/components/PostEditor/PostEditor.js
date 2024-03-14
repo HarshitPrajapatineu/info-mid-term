@@ -3,18 +3,29 @@ import './PostEditor.scss';
 import { Box, Container } from '@mui/material';
 import { Mapper } from '../../util/Mapper';
 import ApiManager from '../../util/ApiManager';
-import { FETCH_POST_EDITOR_VIEW, SAVE_POST } from '../../util/StringConstants';
+import { FETCH_POST_EDITOR_VIEW, GET_POST, SAVE_POST, UPDATE_LIKE, UPDATE_POST } from '../../util/StringConstants';
+import { useLocation } from 'react-router-dom';
 
 const API = ApiManager();
 const PostEditor = () => {
   let [design, setDesign] = useState([]);
   let [compData, setCompData] = useState({});
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+
+  const editPostId = queryParams.get("post");
 
   useEffect(() => {
-    API.get(FETCH_POST_EDITOR_VIEW)
-      .then((response) => {
-        console.log(response);
-        setDesign(response?.data?.design)
+    const urls = [API.get(FETCH_POST_EDITOR_VIEW)]
+    if (editPostId) {
+      urls.push(API.post(GET_POST, {id: editPostId}))
+    }
+
+    Promise.all(urls)
+      .then((responses) => {
+        console.log(responses);
+        setDesign(responses[0]?.data?.design)
+        setCompData(responses[1] ? responses[1]?.data?.data : {})
       }, (error) => {
         if (error.response?.status === 401 || error.response?.status === 403) {
           localStorage.clear();
@@ -44,13 +55,16 @@ const PostEditor = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const { title, description, enablelike } = compData;
+    let newData;
+    console.log(enablelike);
     if (!enablelike) {
-      setCompData({ ...compData, enablelike: "yes" })
+      newData = { ...compData, enablelike: "yes" };
+      setCompData(newData);
     }
 
     if (title && description) {
 
-      API.post(SAVE_POST, prepareData(compData))
+      API.post(editPostId ? UPDATE_POST : SAVE_POST, prepareData(newData))
         .then((response) => {
           setDesign(showError(false, null));
           if (response?.statusText === 'OK') {
@@ -76,9 +90,10 @@ const PostEditor = () => {
     return [...design]
   }
 
-  const prepareData = () => {
-    const { title, description, enablelike } = compData;
+  const prepareData = (newData) => {
+    const { title, description, enablelike } = newData;
     return ({
+      _id: editPostId,
       title: title,
       description: description,
       enablelike: enablelike
@@ -102,7 +117,7 @@ const PostEditor = () => {
                 <Mapper
                   element={element}
                   onEvent={(res) => getActionHandler(res)}
-                  defaultValue={element?.data?.default}
+                  defaultValue={compData[element?.id] ? compData[element?.id] : element?.data?.default}
                   data={compData}
                 />)
             }

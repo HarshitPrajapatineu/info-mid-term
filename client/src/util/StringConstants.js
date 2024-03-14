@@ -24,6 +24,8 @@ export const FETCH_USER_DATA = "/user/get";
 export const UPDATE_USER = "/user/update";
 export const FETCH_USER_ROSTER_DATA = "/user/getUsers";
 export const DELETE_USER = "/user/delete";
+export const FOLLOW_USER = "/user/follow";
+export const UNFOLLOW_USER = "/user/unfollow";
 
 // --------POSTS---------
 export const SAVE_POST = "/post/save";
@@ -31,3 +33,6 @@ export const FETCH_FEED_DATA = "/post/getFeedData";
 export const FETCH_USER_POSTS = "/post/getUserPosts";
 export const FETCH_POST_DATA_BY_USERID = "/post/getPostByUserId";
 export const UPDATE_LIKE = "/post/updateLike";
+export const GET_POST = "/post/get";
+export const DELETE_POST = "/post/delete";
+export const UPDATE_POST = "/post/update";

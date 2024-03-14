@@ -48,7 +48,12 @@ router.get('/:path', function (req, res, next) {
 
 
 const getAdminPath = (path) => {
-  if (path === "userroster" || path === "dashboard") {
+  const pathlist = [
+    "userroster",
+    "dashboard"
+  ]
+  if (pathlist.includes(path)) {
+    // if (path === "userroster" || path === "dashboard") {
     return "./views/admin/";
   }
   else {

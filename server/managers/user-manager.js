@@ -14,19 +14,19 @@ async function deleteUser(id, user) {
     return await User.deleteUser(id, user);
 }
 
-async function followUser(userId, followedUserId) {
-    return User.followUser(userId, followedUserId);
+async function followUser(followedUserId, userId) {
+    return User.followUser(followedUserId, userId);
 }
-async function unfollowUser(userId, unfollowedUserId) {
-    return User.unfollowUser(userId, unfollowedUserId);
+async function unfollowUser(unfollowedUserId, userId) {
+    return User.unfollowUser(unfollowedUserId, userId);
 }
 
 async function getAllUsers() {
     return await User.findAllUser();
 }
 
-async function getfilteredUsers(filter) {
-    return await User.findfilteredUsers(filter);
+async function getfilteredUsers(filter, userId) {
+    return await User.findfilteredUsers(filter, userId);
 }
 
 async function getUserById(id) {

@@ -40,7 +40,12 @@
                     {
                         "action":"follow",
                         "label": "Follow",
-                        "icon": "add_icon"
+                        "icon": "person_add_icon"
+                    },
+                    {
+                        "action":"unfollow",
+                        "label": "Unfollow",
+                        "icon": "person_remove_icon"
                     }
                 ],
                 "label": "Search",

@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema(userObj)
 const schema = mongoose.model('Users', userSchema)
 
 
-async function followUser(userId, followedUserId) {
+async function followUser(followedUserId, userId) {
     try {
 
         // Add followedUserId to the 'following' list of the user
@@ -40,7 +40,7 @@ async function followUser(userId, followedUserId) {
     }
 }
 
-async function unfollowUser(userId, unfollowedUserId) {
+async function unfollowUser(unfollowedUserId, userId ) {
     try {
         // Remove unfollowedUserId from the 'following' list of the user
         const res1 = await schema.findByIdAndUpdate(userId, { $pull: { following: unfollowedUserId } });
@@ -66,22 +66,28 @@ async function findAllUser() {
     return users;
 }
 
-async function findfilteredUsers(filter) {
+async function findfilteredUsers(filter, userId) {
     const { searchString, pagination } = filter;
+    const page = pagination?.page ? pagination?.page : 0
+    const pageSize = pagination?.pageSize ? pagination?.pageSize : 10
     const regex = new RegExp(searchString, 'i') // i for case insensitive
     let users;
     try {
-        users = await schema.find({
-            $or: [
-                { firstname: { $regex: regex } },
-                { lastname: { $regex: regex } },
-                { email: { $regex: regex } }
-            ],
-            IsDeleted: false
-        }, { IsDeleted: 0, __v: 0, password: 0, followers: 0, following:0, posts:0 })
-            .skip(pagination?.page * pagination?.pageSize)
-            .limit(pagination?.pageSize)
-            .lean();
+        const userfollowingList = await schema.findOne({_id: new ObjectId(userId), IsDeleted: false}, {_id: 0, following:1}).lean();
+        console.log(userfollowingList);
+        users = await schema.aggregate()
+            .match({
+                $or: [
+                    { firstname: { $regex: regex } },
+                    { lastname: { $regex: regex } },
+                    { email: { $regex: regex } }
+                ],
+                IsDeleted: false
+            })
+            .addFields({ isFollowed: { $in: [new ObjectId(userId), '$followers'] } })
+            .project({ IsDeleted: 0, __v: 0, password: 0, followers: 0, following: 0, posts: 0 })
+            .skip(page * pageSize)
+            .limit(pageSize);
     } catch (error) {
         console.error('Error fetching users:', error);
     }
@@ -91,13 +97,39 @@ async function findfilteredUsers(filter) {
 async function findUserById(id) {
     let user;
     try {
-        user = await schema.findOne({ _id: id, IsDeleted: false })
-            .select({ _id: 1, firstname: 1, lastname: 1, email: 1, userrole: 1 })
-            .lean();
+        user = await schema.aggregate([
+            {
+                $match:
+                    { _id: new ObjectId(id), IsDeleted: false }
+            },
+            {
+                $addFields: {
+                    postCount: { $size: '$posts' },
+                    followerCount: { $size: '$followers' },
+                    followingCount: { $size: '$following' }
+                }
+            },
+            {
+                $project: {
+                    IsDeleted: 0,
+                    modifiedBy: 0,
+                    modifiedOn: 0,
+                    createdBy: 0,
+                    createdOn: 0,
+                    followers: 0,
+                    following: 0,
+                    posts: 0,
+                    __v: 0
+                }
+            },
+            {
+                $limit: 1
+            }
+        ]);
     } catch (error) {
         console.error('Error fetching user:', error);
     }
-    return user;
+    return user ? user[0] : false;
 }
 
 async function findUserByEmail(email) {
@@ -144,7 +176,7 @@ async function createNewUser(userParam, isAdminCreation = false) {
 async function updateUser(userParam, user) {
     let res;
     try {
-        const usr = await schema.findOne({_id:userParam?._id, IsDeleted: false });
+        const usr = await schema.findOne({ _id: userParam?._id, IsDeleted: false });
         res = usr.updateOne(
             {
                 firstname: userParam.firstname,
@@ -199,6 +231,8 @@ module.exports = {
     createNewUser: createNewUser,
     findUserByEmail: findUserByEmail,
     updateUser: updateUser,
+    followUser: followUser,
+    unfollowUser: unfollowUser,
     deleteUser: deleteUser,
     findFollowerUsers: findFollowerUsers,
     findFollowingUsers: findFollowingUsers,

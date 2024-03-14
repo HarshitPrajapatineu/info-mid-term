@@ -107,7 +107,11 @@ const UserEditor = () => {
             }}
           >
             {
-              design && design.map(element => <Mapper element={element} onEvent={(res) => getActionHandler(res)} defaultValue={compData[element.id]} data={compData} />)
+              design && design.map(element => <Mapper 
+                element={element} 
+                onEvent={(res) => getActionHandler(res)} 
+                defaultValue={compData[element.id]} 
+                data={compData} />)
             }
           </Box>
         </form>

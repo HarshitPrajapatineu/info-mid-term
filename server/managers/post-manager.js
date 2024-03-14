@@ -30,7 +30,7 @@ async function updatePost(postParam, user) {
 }
 
 async function deletePost(id, user) {
-    return await Post.deleteUser(id, user);
+    return await Post.deletePost(id, user);
 }
 
 async function getPostById() {
@@ -40,6 +40,9 @@ async function getPostById() {
 async function updateLike(postParam, user) {
     return await Post.updateLike(postParam, user)
 }
+async function getPost(id) {
+    return await Post.getPost(id)
+}
 
 module.exports = {
     addNewPost,
@@ -47,5 +50,6 @@ module.exports = {
     getPostsForFeed,
     updatePost,
     deletePost,
-    updateLike
+    updateLike,
+    getPost
 };

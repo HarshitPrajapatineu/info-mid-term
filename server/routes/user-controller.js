@@ -92,6 +92,52 @@ router.post('/delete', async function (req, res, next) {
 });
 
 
+/**
+ * @openapi
+ * /api/users/follow/:
+ *   post:
+ *     description: Welcome to swagger-jsdoc!
+ *     responses:
+ *       200:
+ *         description: Returns a mysterious string.
+ */
+router.post('/follow', async function (req, res, next) {
+  try {
+
+    console.log(req.body);
+    const user = await userManager.followUser(req.body.id, req.user.id);
+    console.log(user);
+    // res.redirect("/api/view/login");
+    res.send(RS.RBData200OK(user));
+  } catch (error) {
+    console.log(error)
+  }
+});
+
+
+/**
+ * @openapi
+ * /api/users/unfollow/:
+ *   post:
+ *     description: Welcome to swagger-jsdoc!
+ *     responses:
+ *       200:
+ *         description: Returns a mysterious string.
+ */
+router.post('/unfollow', async function (req, res, next) {
+  try {
+
+    console.log(req.body);
+    const user = await userManager.unfollowUser(req.body.id, req.user.id);
+    console.log(user);
+    // res.redirect("/api/view/login");
+    res.send(RS.RBData200OK(user));
+  } catch (error) {
+    console.log(error)
+  }
+});
+
+
 
 /**
  * @openapi
@@ -115,7 +161,8 @@ router.post('/delete', async function (req, res, next) {
 router.post('/getUsers', async function (req, res) {
 
   const filter = req.body
-  const users = await userManager.getfilteredUsers(filter);
+  const user = req.user
+  const users = await userManager.getfilteredUsers(filter, user.id);
   res.send(RS.RBData200OK(users));
 });
 

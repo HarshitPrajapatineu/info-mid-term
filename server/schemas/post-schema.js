@@ -67,7 +67,7 @@ async function updatePost(postParam, user) {
     try {
         const doc = await schema.findById(postParam._id);
 
-        output = await doc.update({
+        output = await doc.updateOne({
             title: postParam.title,
             description: postParam.description,
             enablelike: postParam.enablelike,
@@ -82,12 +82,12 @@ async function updatePost(postParam, user) {
     return output;
 }
 
-async function deletePost(postParam, user) {
-
+async function deletePost(id, user) {
+    let output
     try {
-        const doc = await schema.findById(postParam._id);
+        const doc = await schema.findById(id);
 
-        const output = await doc.update({
+        output = await doc.updateOne({
             modifiedOn: Date.now(),
             modifiedBy: user.id,
             IsDeleted: true
@@ -165,6 +165,17 @@ async function updateLike(postParam, user) {
     }
 }
 
+async function getPost(id) {
+    let res;
+    try {
+        return await schema.findOne({ _id: id, IsDeleted: false })
+            .select({ _id: 1, title: 1, description: 1, enablelike: 1}).lean();
+    } catch (error) {
+        console.error('Error fetching user:', error);
+        return res;
+    }
+}
+
 
 module.exports = {
     findAllPost: findAllPost,
@@ -174,5 +185,6 @@ module.exports = {
     deletePost: deletePost,
     getPostCount: getPostCount,
     findPostByUserIds: findPostByUserIds,
-    updateLike: updateLike
+    updateLike: updateLike,
+    getPost: getPost
 };

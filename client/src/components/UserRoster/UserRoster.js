@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './UserRoster.scss';
 import Box from '@mui/material/Box';
-import { DELETE_USER, FETCH_SEARCH_VIEW, FETCH_USER_ROSTER_DATA, FETCH_USER_ROSTER_VIEW } from '../../util/StringConstants';
+import { DELETE_USER, FETCH_SEARCH_VIEW, FETCH_USER_ROSTER_DATA, FETCH_USER_ROSTER_VIEW, FOLLOW_USER, UNFOLLOW_USER } from '../../util/StringConstants';
 import ApiManager from '../../util/ApiManager';
 import { Mapper } from '../../util/Mapper';
 import { Container } from '@mui/material';
@@ -11,7 +11,7 @@ const API = ApiManager();
 const UserRoster = ({ view }) => {
 
   let [design, setDesign] = useState([]);
-  let [compData, setCompData] = useState({});
+  let [compData, setCompData] = useState([]);
   let [searchString, setSearchString] = useState({});
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
@@ -103,11 +103,29 @@ const UserRoster = ({ view }) => {
   }
 
   const handleFollowButton = (id) => {
-
+    API.post(FOLLOW_USER, { id: id })
+      .then((response) => {
+        if (response?.statusText === "OK") {
+            let row = compData.find(item => item._id === id);
+            row["isFollowed"] = true;
+            setCompData([...compData])
+        }
+      }, (error) => {
+        console.log(error);
+      })
   }
 
   const handleUnfollowButton = (id) => {
-
+    API.post(UNFOLLOW_USER, { id: id })
+      .then((response) => {
+        if (response?.statusText === "OK") {
+            let row = compData.find(item => item._id === id);
+            row["isFollowed"] = false;
+            setCompData([...compData])
+        }
+      }, (error) => {
+        console.log(error);
+      })
   }
 
 
