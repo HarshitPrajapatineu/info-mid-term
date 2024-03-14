@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import './UserRoster.scss';
 import Box from '@mui/material/Box';
-import { DELETE_USER, FETCH_USER_ROSTER_DATA, FETCH_USER_ROSTER_VIEW } from '../../util/StringConstants';
+import { DELETE_USER, FETCH_SEARCH_VIEW, FETCH_USER_ROSTER_DATA, FETCH_USER_ROSTER_VIEW } from '../../util/StringConstants';
 import ApiManager from '../../util/ApiManager';
 import { Mapper } from '../../util/Mapper';
 import { Container } from '@mui/material';
 
 const API = ApiManager();
 
-const UserRoster = () => {
+const UserRoster = ({ view }) => {
 
   let [design, setDesign] = useState([]);
   let [compData, setCompData] = useState({});
@@ -17,16 +17,26 @@ const UserRoster = () => {
     page: 0,
     pageSize: 5,
   });
-  
+
+  const getViewURL = () => {
+    switch (view) {
+      case "userroster":
+        return FETCH_USER_ROSTER_VIEW;
+      case "search":
+        return FETCH_SEARCH_VIEW;
+    }
+  }
+
   useEffect(() => {
+    const url = getViewURL();
     Promise.all([
-      API.get(FETCH_USER_ROSTER_VIEW),
+      API.get(url),
       API.post(FETCH_USER_ROSTER_DATA, {})
     ]).then((responses) => {
       setDesign(responses[0]?.data?.design)
       setCompData(responses[1]?.data?.data)
     }, (error) => {
-      if (error.response.status === 401 || error.response.status === 403) {
+      if (error.response?.status === 401 || error.response?.status === 403) {
         localStorage.clear();
         window.location.href = "/login"
       }
@@ -61,7 +71,7 @@ const UserRoster = () => {
       .then((response) => {
         setCompData(response?.data?.data)
       }, (error) => {
-        if (error.response.status === 401 || error.response.status === 403) {
+        if (error.response?.status === 401 || error.response?.status === 403) {
           localStorage.clear();
           window.location.href = "/login"
         }
@@ -79,12 +89,12 @@ const UserRoster = () => {
 
   const handleDeleteButton = (id) => {
     Promise.all([
-      API.post(DELETE_USER, {id}),
+      API.post(DELETE_USER, { id }),
       API.post(FETCH_USER_ROSTER_DATA, {})
     ]).then((responses) => {
       setCompData(responses[1]?.data?.data)
     }, (error) => {
-      if (error.response.status === 401 || error.response.status === 403) {
+      if (error.response?.status === 401 || error.response?.status === 403) {
         localStorage.clear();
         window.location.href = "/login"
       }
@@ -114,12 +124,12 @@ const UserRoster = () => {
             }}
           >
             {
-              design && design.map(element => <Mapper 
-                element={element} 
-                onEvent={(res) => getActionHandler(res)} 
+              design && design.map(element => <Mapper
+                element={element}
+                onEvent={(res) => getActionHandler(res)}
                 data={element.id === "searchfield" ? searchString : compData}
-                options={{paginationModel: paginationModel, setPaginationModel: setPaginationModel}} />)
-                
+                options={{ paginationModel: paginationModel, setPaginationModel: setPaginationModel }} />)
+
             }
           </Box>
         </form>

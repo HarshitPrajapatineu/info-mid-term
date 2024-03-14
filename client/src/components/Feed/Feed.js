@@ -26,7 +26,7 @@ const Feed = () => {
       setDesign(responses[0]?.data?.design)
       setCompData(responses[1]?.data?.data)
     }, (error) => {
-      if (error.response.status === 401 || error.response.status === 403) {
+      if (error.response?.status === 401 || error.response?.status === 403) {
         localStorage.clear();
         window.location.href = "/login"
       }

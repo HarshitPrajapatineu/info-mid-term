@@ -20,7 +20,7 @@ async function getPostsForFeed(userId) {
 
     const userlist = await User.findFollowingUsers(userId);
     
-    return await Post.findPostByUserIds(null)
+    return await Post.findPostByUserIds(null, userId)
     // return Post.();
 }
 
@@ -33,8 +33,12 @@ async function deletePost(id, user) {
     return await Post.deleteUser(id, user);
 }
 
-function getPostById() {
-    return Post.findAllPost();
+async function getPostById() {
+    return await Post.findAllPost();
+}
+
+async function updateLike(postParam, user) {
+    return await Post.updateLike(postParam, user)
 }
 
 module.exports = {
@@ -42,5 +46,6 @@ module.exports = {
     getAllPosts,
     getPostsForFeed,
     updatePost,
-    deletePost
+    deletePost,
+    updateLike
 };

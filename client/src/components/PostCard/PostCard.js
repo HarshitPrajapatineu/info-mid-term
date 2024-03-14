@@ -8,20 +8,35 @@ import CardActions from '@mui/material/CardActions';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import { red } from '@mui/material/colors';
+import { pink, red } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Icon } from '@mui/material';
+import ApiManager from '../../util/ApiManager';
+import { UPDATE_LIKE } from '../../util/StringConstants';
+
+
+const API = ApiManager();
 
 const PostCard = ({ data }) => {
-  const [expanded, setExpanded] = useState(false);
 
   const [cardData, setCardData] = useState(data);
 
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
+  const handleLikeButton = () => {
+    API.post(UPDATE_LIKE, { id: cardData?._id, action: (!cardData?.isLiked ? "add" : "remove") })
+      .then((response) => {
+        if (response?.statusText === "OK") {
+          setCardData({
+            ...cardData,
+            isLiked: !cardData.isLiked,
+            likeCount: (cardData.isLiked ? cardData.likeCount - 1 : cardData.likeCount + 1)
+          });
+        }
+      }, (error) => {
+        console.log(error);
+      })
+  }
 
   return (
     <Card sx={{ maxWidth: "lg" }}>
@@ -56,13 +71,20 @@ const PostCard = ({ data }) => {
       {/* Action Buttons */}
       <CardActions disableSpacing >
         {cardData?.enablelike === "yes"
-          ? <IconButton onClick={(cardData) => { handleLikeButton() }} aria-label="add to favorites">
-            <Icon>{"favorite_icon"}</Icon>
-          </IconButton>
+          ? <>
+            <IconButton onClick={(cardData) => { handleLikeButton() }} aria-label="add to favorites">
+              {cardData?.isLiked
+                ? <Icon sx={{ color: pink[500] }} >{"favorite_icon"}</Icon>
+                : <Icon>{"favorite_icon"}</Icon>}
+              {cardData?.likeCount}
+            </IconButton>
+          </>
           : <></>}
-        <IconButton onClick={() => { handleLikeButton() }} aria-label="share">
+
+        {/* <Typography>{cardData?.likeCount}</Typography> */}
+        {/* <IconButton onClick={() => { handleLikeButton() }} aria-label="share">
           <Icon>{"favorite_icon"}</Icon>
-        </IconButton>
+        </IconButton> */}
       </CardActions>
     </Card>
   );

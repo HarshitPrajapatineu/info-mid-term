@@ -1,0 +1,47 @@
+{
+    "design": [
+        {
+            "id": "sidebar",
+            "type": "sidebar",
+            "default": "feed",
+            "data": {
+                "itemList": [
+                    {
+                        "name": "feed",
+                        "label": "Feed",
+                        "route": "feed",
+                        "icon": "feed_icon"
+                    },
+                    {
+                        "name": "createpost",
+                        "label": "Create Post",
+                        "route": "posteditor",
+                        "icon": "add_box_icon"
+                    },
+                    {
+                        "name": "search",
+                        "label": "Search",
+                        "route": "search",
+                        "icon": "search_icon"
+                    },
+                    {
+                        "name": "userroster",
+                        "label": "User Roster",
+                        "route": "userroster",
+                        "icon": "group_icon"
+                    },
+                    {
+                        "name": "divider",
+                        "label": "Divider"
+                    },
+                    {
+                        "name": "profile",
+                        "label": "Profile",
+                        "route": "profile",
+                        "icon": "person_icon"
+                    }
+                ]
+            }
+        }
+    ]
+}

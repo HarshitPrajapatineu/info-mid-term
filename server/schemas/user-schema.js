@@ -26,10 +26,10 @@ async function followUser(userId, followedUserId) {
     try {
 
         // Add followedUserId to the 'following' list of the user
-        const res1 = await User.findByIdAndUpdate(userId, { $addToSet: { following: followedUserId } });
+        const res1 = await schema.findByIdAndUpdate(userId, { $addToSet: { following: followedUserId } });
 
         // Add userId to the 'followers' list of the followedUser
-        const res2 = await User.findByIdAndUpdate(followedUserId, { $addToSet: { followers: userId } });
+        const res2 = await schema.findByIdAndUpdate(followedUserId, { $addToSet: { followers: userId } });
 
         console.log('User followed successfully');
 
@@ -43,10 +43,10 @@ async function followUser(userId, followedUserId) {
 async function unfollowUser(userId, unfollowedUserId) {
     try {
         // Remove unfollowedUserId from the 'following' list of the user
-        const res1 = await User.findByIdAndUpdate(userId, { $pull: { following: unfollowedUserId } });
+        const res1 = await schema.findByIdAndUpdate(userId, { $pull: { following: unfollowedUserId } });
 
         // Remove userId from the 'followers' list of the unfollowedUser
-        const res2 = await User.findByIdAndUpdate(unfollowedUserId, { $pull: { followers: userId } });
+        const res2 = await schema.findByIdAndUpdate(unfollowedUserId, { $pull: { followers: userId } });
 
         console.log('User unfollowed successfully');
         return res1 && res2;
@@ -78,7 +78,7 @@ async function findfilteredUsers(filter) {
                 { email: { $regex: regex } }
             ],
             IsDeleted: false
-        }, { IsDeleted: 0, __v: 0, password: 0 })
+        }, { IsDeleted: 0, __v: 0, password: 0, followers: 0, following:0, posts:0 })
             .skip(pagination?.page * pagination?.pageSize)
             .limit(pagination?.pageSize)
             .lean();
@@ -91,8 +91,8 @@ async function findfilteredUsers(filter) {
 async function findUserById(id) {
     let user;
     try {
-        user = await schema.findById(id, { _id: 1, firstname: 1, lastname: 1, email: 1, userrole: 1 })
-            .find({ IsDeleted: false })
+        user = await schema.findOne({ _id: id, IsDeleted: false })
+            .select({ _id: 1, firstname: 1, lastname: 1, email: 1, userrole: 1 })
             .lean();
     } catch (error) {
         console.error('Error fetching user:', error);
@@ -144,7 +144,7 @@ async function createNewUser(userParam, isAdminCreation = false) {
 async function updateUser(userParam, user) {
     let res;
     try {
-        const usr = await schema.findById(userParam?._id).find({ IsDeleted: false });
+        const usr = await schema.findOne({_id:userParam?._id, IsDeleted: false });
         res = usr.updateOne(
             {
                 firstname: userParam.firstname,

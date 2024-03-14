@@ -23,7 +23,7 @@ const Dashboard = () => {
       .then((response) => {
         setDesign(response?.data?.design)
       }, (error) => {
-        if (error.response.status === 401 || error.response.status === 403) {
+        if (error.response?.status === 401 || error.response?.status === 403) {
           localStorage.clear();
           window.location.href = "/login"
         }
@@ -48,7 +48,8 @@ const Dashboard = () => {
             <Route path="/feed" element={<Feed />} />
             <Route path="/posteditor" element={<PostEditor />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/search" element={<UserRoster />} />
+            <Route path="/search" element={<UserRoster view={"search"} />} />
+            <Route path="/userroster" element={<UserRoster view={"userroster"}/>} />
             <Route path="/usereditor" element={<UserEditor />} />
             {/* <Route path="/contact" element={<Contact/>} /> */}
             {/* Not found route - should be at the end */}

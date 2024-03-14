@@ -39,7 +39,7 @@
             }
         },
         {
-            "name": "divider",
+            "type": "divider",
             "label": "Divider"
         },
         {

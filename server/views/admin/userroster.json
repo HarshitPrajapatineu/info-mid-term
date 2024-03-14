@@ -32,11 +32,6 @@
             }
         },
         {
-            "id": "divider",
-            "type": "divider",
-            "label": "Divider"
-        },
-        {
             "id": "usertable",
             "type": "datatable",
             "data": {

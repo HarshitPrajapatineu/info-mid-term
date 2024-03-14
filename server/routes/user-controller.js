@@ -9,19 +9,9 @@ var router = express.Router();
 
 /**
  * @openapi
- * /api/users/get/:
+ * /api/users/getAllUsers/:
  *   get:
  *     description: Welcome to swagger-jsdoc!
- *     requestBody: {
- *       content: {
- *         "application/json": {
- *           schema: {
- * $ref: "./schema.json"
- * }
- *              
- *         }
- *       }
- *      }
  *     responses:
  *       200:
  *         description: List of Users.
@@ -81,7 +71,7 @@ router.post('/update', async function (req, res, next) {
 
 /**
  * @openapi
- * /api/users/update/:
+ * /api/users/delete/:
  *   post:
  *     description: Welcome to swagger-jsdoc!
  *     responses:
@@ -105,7 +95,7 @@ router.post('/delete', async function (req, res, next) {
 
 /**
  * @openapi
- * /api/users/get/:
+ * /api/users/getUsers/:
  *   get:
  *     description: Welcome to swagger-jsdoc!
  *     requestBody: {
@@ -136,23 +126,13 @@ router.post('/getUsers', async function (req, res) {
  * /api/users/get/:
  *   get:
  *     description: Welcome to swagger-jsdoc!
- *     requestBody: {
- *       content: {
- *         "application/json": {
- *           schema: {
- * $ref: "./schema.json"
- * }
- *              
- *         }
- *       }
- *      }
  *     responses:
- *       200:
+ *       200:x`
  *         description: List of Users.
  */
-router.post('/get', async function (req, res) {
+router.get('/get', async function (req, res) {
 
-  const { id } = req.body
+  const { id } = req.user
   const users = await userManager.getUserById(id);
   res.send(RS.RBData200OK(users));
 });

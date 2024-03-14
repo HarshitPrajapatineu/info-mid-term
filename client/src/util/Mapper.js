@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Divider, FormControl, FormControlLabel, FormLabel, Icon, Radio, RadioGroup, Select, TextField, Toolbar, Typography, styled } from "@mui/material";
+import { Alert, Avatar, Box, Button, Card, CardContent, Divider, FormControl, FormControlLabel, FormLabel, Icon, Radio, RadioGroup, Select, TextField, Toolbar, Typography, styled } from "@mui/material";
 import { GridToolbarContainer } from "@mui/x-data-grid";
 import { DataGrid, GridActionsCellItem, GridRowEditStopReasons, GridRowModes } from "@mui/x-data-grid";
 import { forwardRef, useEffect, useState } from "react";
@@ -132,7 +132,7 @@ export const Mapper = ({
     const renderDivider = () => {
         return (
             <>
-                <Divider orientation="horizontal" variant="fullWidth" />
+                <Toolbar></Toolbar><Divider></Divider>
             </>
         )
     }
@@ -385,15 +385,31 @@ export const Mapper = ({
                 const acts = [];
                 actions.map((action) => {
                     acts.push(
-                        <GridActionsCellItem
-                            icon={<Icon>{action.icon}</Icon>}
-                            label={action.label}
-                            disabled={localStorage.getItem("userId") === id}
+                        // <GridActionsCellItem
+                        //     icon={<Icon>{action.icon}</Icon>}
+                        //     label={action.label}
+                        //     value={action.label}
+                        //     name={action.label}
+                        //     title={action.label}
+                        //     disabled={localStorage.getItem("userId") === id}
 
-                            className="textPrimary"
-                            onClick={() => { onEvent({ action: action?.action, id: id }); }}
-                            color="inherit"
-                        />
+                        //     className="textPrimary"
+                        //     onClick={() => { onEvent({ action: action?.action, id: id }); }}
+                        //     color="inherit"
+                        // > {action.label}</GridActionsCellItem>
+                        <Button
+                        variant="contained"
+                        type="submit"
+                        className="textPrimary"
+                        disabled={localStorage.getItem("userId") === id}
+                        onClick={() => { onEvent({ action: action?.action, id: id }); }}
+                        key={element.id}
+                        color="inherit"
+                        sx={{  padding:"2px", fontSize:"10px" }}>
+                            {/* <Icon>{action.icon}</Icon> */}
+                            {action.label}
+        
+                    </Button>
                     )
                 });
 
@@ -411,26 +427,6 @@ export const Mapper = ({
     }
 
     const renderTable = () => {
-        function EditToolbar(props) {
-            const { setRowModesModel } = props;
-
-            const handleClick = () => {
-                const id = 1;
-                setRowModesModel((oldModel) => ({
-                    ...oldModel,
-                    [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
-                }));
-            };
-
-            return (
-                <GridToolbarContainer>
-                    <Button color="primary" startIcon={<Icon>{"add_icon"}</Icon>} onClick={handleClick}>
-                        Add record
-                    </Button>
-                </GridToolbarContainer>
-            );
-        }
-
         return <Box
             sx={{
                 height: 500,
@@ -453,9 +449,6 @@ export const Mapper = ({
                 loading={loading}
                 rowCount={100}
                 onPaginationModelChange={() => { setPaginationModel(); options?.setPaginationModel() }}
-                slots={{
-                    toolbar: EditToolbar,
-                }}
                 slotProps={{
                     toolbar: { setRowModesModel },
                 }}
@@ -466,14 +459,15 @@ export const Mapper = ({
     const renderPostCardList = () => {
         return (
             <Box
-            sx={{
-              marginTop: 2
-            }}
-          >
+                sx={{
+                    marginTop: 2
+                }}
+            >
                 {/*
                 render post on iteration of coming data if data changes
                 */}
                 {
+                    console.log(data)}{
                     data.map((pcard, idx) => {
                         return (<>
                             <PostCard key={idx} data={pcard}>
@@ -481,10 +475,42 @@ export const Mapper = ({
                             </PostCard>
                             <Toolbar variant='dense' ></Toolbar>
                         </>
-                        )})
+                        )
+                    })
                 }
             </Box>
         )
+    }
+
+    const renderProfileCard = () => {
+        const d = element.data
+        return (
+            <Card sx={{ height: "200px", display: 'flex' }}>
+
+                <Box sx={{ display: 'flex', alignItems: 'center', paddingX: "24px" }}>
+                    <Avatar sx={{ width: 72, height: 72 }} src="/broken-image.jpg" />
+                </Box>
+
+                <CardContent sx={{ flex: '1 0 auto', alignItems: 'center', paddingY: "48px" }}>
+                    <Typography component="div" variant="h5">
+                        Live From Space
+                    </Typography>
+                    <Typography variant="subtitle1" color="text.secondary" component="div">
+                        Admin
+                    </Typography>
+                    <Typography variant="subtitle1" color="text.secondary" component="div">
+                        Email@example.com
+                    </Typography>
+                </CardContent>
+
+                <Box sx={{ display: 'flex', alignItems: 'center', padding: "24px" }}>
+                    <Button variant="contained" startIcon={<Icon>{"edit_icon"}</Icon>}>
+                        Edit Profile
+                    </Button>
+                </Box>
+            </Card>
+        )
+
     }
 
     switch (element.type) {
@@ -523,6 +549,9 @@ export const Mapper = ({
 
         case "postcardlist":
             return renderPostCardList()
+
+        case "profilecard":
+            return renderProfileCard()
 
         default:
             break;

@@ -17,7 +17,7 @@ const Login = () => {
   const { login } = useContext(AuthContext);
 
   useEffect(() => {
-    if (localStorage.getItem("session") && localStorage.getItem("session") != {}) {
+    if (localStorage.getItem("token") && localStorage.getItem("lastname")) {
       window.location.href = "/dashboard/feed"
     }
     API.get(FETCH_LOGIN_VIEW)
@@ -25,7 +25,7 @@ const Login = () => {
         console.log(response);
         setDesign(response?.data?.design)
       }, (error) => {
-        if(error.response.status === 401 || error.response.status === 403) {
+        if(error.response?.status === 401 || error.response?.status === 403) {
           localStorage.clear();
           window.location.href = "/login"
         }
@@ -60,7 +60,7 @@ const Login = () => {
       API.post(AUTH_LOGIN, prepareData(compData))
         .then((response) => {
           setDesign(showError(false, null));
-          if (response.statusText === 'OK') {
+          if (response?.statusText === 'OK') {
             const { token, userId, userrole, email, lastname } = response?.data?.data;
             localStorage.setItem("token", token);
             localStorage.setItem("userId", userId);
@@ -75,11 +75,11 @@ const Login = () => {
             });
 
           } else {
-            setDesign(showError(true, response.statusText));
+            setDesign(showError(true, response?.statusText));
           }
           console.log(response);
         }, (error) => {
-          if(error.response.status === 401 || error.response.status === 403) {
+          if(error.response?.status === 401 || error.response?.status === 403) {
             localStorage.clear();
             window.location.href = "/login"
           }

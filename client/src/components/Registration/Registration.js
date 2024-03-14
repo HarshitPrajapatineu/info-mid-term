@@ -17,7 +17,7 @@ const Registration = () => {
         console.log(response);
         setDesign(response?.data?.design)
       }, (error) => {
-        if(error.response.status === 401 || error.response.status === 403) {
+        if(error.response?.status === 401 || error.response?.status === 403) {
           localStorage.clear();
           window.location.href = "/login"
         }
@@ -49,12 +49,12 @@ const Registration = () => {
       API.post(REGISTER_USER, prepareData(compData))
         .then((response) => {
           setDesign(showError(false, null));
-          if (response.statusText === 'OK') {
+          if (response?.statusText === 'OK') {
             window.location.href = "/login"
           }
           console.log(response);
         }, (error) => {
-          if(error.response.status === 401 || error.response.status === 403) {
+          if(error.response?.status === 401 || error.response?.status === 403) {
             localStorage.clear();
             window.location.href = "/login"
           }

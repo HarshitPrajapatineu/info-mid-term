@@ -58,6 +58,33 @@ router.post('/getFeedData', async function (req, res) {
   res.send(RS.RBData200OK(posts));
 });
 
+/**
+ * @openapi
+ * /api/post/getUserPosts:
+ *   get:
+ *     description: Welcome to swagger-jsdoc!
+ *     requestBody: {
+ *       content: {
+ *         "application/json": {
+ *           schema: {
+ * $ref: "./schema.json"
+ * }
+ *              
+ *         }
+ *       }
+ *      }
+ *     responses:
+ *       200:
+ *         description: List of Posts Based on user session.
+ */
+router.get('/getUserPosts', async function (req, res) {
+
+  const userId = req.user.id;
+  const posts = await postManager.getPostsForFeed(userId);
+  res.send(RS.RBData200OK(posts));
+});
+
+
 
 /**
  * @openapi
@@ -70,10 +97,32 @@ router.post('/getFeedData', async function (req, res) {
  */
 router.post('/save', async function (req, res, next) {
   try {
- 
+
     console.log(req.body);
     const post = await postManager.addNewPost(req.body, req.user);
     console.log(req.user);
+    console.log(post);
+    // res.redirect("/api/view/login");
+    res.send(RS.RBData200OK(post));
+  } catch (error) {
+    console.log(error)
+  }
+});
+
+
+/**
+ * @openapi
+ * /api/post/save/:
+ *   post:
+ *     description: Welcome to swagger-jsdoc!
+ *     responses:
+ *       200:
+ *         description: Returns a mysterious string.
+ */
+router.post('/updateLike', async function (req, res, next) {
+  try {
+
+    const post = await postManager.updateLike(req.body, req.user);
     console.log(post);
     // res.redirect("/api/view/login");
     res.send(RS.RBData200OK(post));

@@ -93,7 +93,7 @@ async function deletePost(postParam, user) {
             IsDeleted: true
         });
     }
-    catch (error)  {
+    catch (error) {
         console.error('Error deleting post:', error);
 
     }
@@ -112,14 +112,53 @@ async function getPostCount() {
     }
 }
 
-async function findPostByUserIds(userIds) {
+async function findPostByUserIds(userIds, userId) {
     let res;
     try {
-        res = await schema.find(userIds ? { createdBy: { $in: userIds }, IsDeleted: false }: { IsDeleted: false})
-        .sort({createdOn: 1})
-        .limit(10)
-        .lean();
+        res = await schema.aggregate([
+            {
+                $match:
+                    userIds ? { createdBy: { $in: userIds }, IsDeleted: false } : { IsDeleted: false }
+            },
+            {
+                $addFields: {
+                    likeCount: { $size: '$likedBy' },
+                    isLiked: { $in: [new ObjectId(userId), '$likedBy'] }  // Calculate like count using the $size operator
+                }
+            },
+            {
+                $project: {
+                    likedBy: 0, // Exclude the 'likes' field from the output if not needed
+                    IsDeleted: 0,
+                    modifiedBy: 0,
+                    modifiedOn: 0,
+                    __v: 0
+                }
+            },
+            {
+                $limit: 10
+            },
+            {
+                $sort: { createdOn: -1 }
+            }
+        ]);
         return res;
+    } catch (error) {
+        console.error('Error fetching user:', error);
+        return res;
+    }
+}
+
+async function updateLike(postParam, user) {
+    let res;
+    try {
+        if (postParam?.action === "add") {
+
+            return await schema.findByIdAndUpdate(postParam.id, { $addToSet: { likedBy: user?.id } });
+        } else if (postParam?.action === "remove") {
+
+            return await schema.findByIdAndUpdate(postParam.id, { $pull: { likedBy: user?.id } });
+        }
     } catch (error) {
         console.error('Error fetching user:', error);
         return res;
@@ -134,5 +173,6 @@ module.exports = {
     updatePost: updatePost,
     deletePost: deletePost,
     getPostCount: getPostCount,
-    findPostByUserIds: findPostByUserIds
+    findPostByUserIds: findPostByUserIds,
+    updateLike: updateLike
 };

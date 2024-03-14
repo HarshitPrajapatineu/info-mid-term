@@ -24,9 +24,10 @@ const UserEditor = () => {
   ])      .then((responses) => {
         console.log(responses);
         setDesign(responses[0]?.data?.design);
+        console.log(responses[1]?.data?.data);
         setCompData(responses[1]?.data?.data);
       }, (error) => {
-        if(error.response.status === 401 || error.response.status === 403) {
+        if(error.response?.status === 401 || error.response?.status === 403) {
           localStorage.clear();
           window.location.href = "/login"
         }
@@ -58,12 +59,12 @@ const UserEditor = () => {
       API.post(UPDATE_USER, prepareData(compData))
         .then((response) => {
           setDesign(showError(false, null));
-          if (response.statusText === 'OK') {
+          if (response?.statusText === 'OK') {
             window.location.href = "/dashboard/search"
           }
           console.log(response);
         }, (error) => {
-          if(error.response.status === 401 || error.response.status === 403) {
+          if(error.response?.status === 401 || error.response?.status === 403) {
             localStorage.clear();
             window.location.href = "/login"
           }
