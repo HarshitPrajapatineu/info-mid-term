@@ -10,12 +10,12 @@ const userObj = {
     password: String,
     createdOn: Date,
     modifiedOn: Date,
-    modifiedBy: ObjectId,
+    modifiedBy: String,
     userrole: String,
     IsDeleted: Boolean,
-    following: [{ type: ObjectId, ref: 'Users' }], // Users this user is following
-    followers: [{ type: ObjectId, ref: 'Users' }], // Users who are following this user
-    posts: [{ type: ObjectId, ref: 'Posts' }], // Users who are following this user
+    following: [{ type: String, ref: 'Users' }], // Users this user is following
+    followers: [{ type: String, ref: 'Users' }], // Users who are following this user
+    posts: [{ type: String, ref: 'Posts' }], // Users who are following this user
 }
 const userSchema = new mongoose.Schema(userObj)
 
@@ -84,7 +84,7 @@ async function findfilteredUsers(filter, userId) {
                 ],
                 IsDeleted: false
             })
-            .addFields({ isFollowed: { $in: [new ObjectId(userId), '$followers'] } })
+            .addFields({ isFollowed: { $in: [userId, '$followers'] } })
             .project({ IsDeleted: 0, __v: 0, password: 0, followers: 0, following: 0, posts: 0 })
             .skip(page * pageSize)
             .limit(pageSize);
@@ -114,6 +114,7 @@ async function findUserById(id) {
                     IsDeleted: 0,
                     modifiedBy: 0,
                     modifiedOn: 0,
+                    password: 0,
                     createdBy: 0,
                     createdOn: 0,
                     followers: 0,
@@ -140,15 +141,15 @@ async function findUserByEmail(email) {
 }
 
 async function findFollowingUsers(userId) {
-    const user = await schema.find({ _id: userId, IsDeleted: false })
-        .select({ followingList: 1, _id: 0 })
+    const user = await schema.findOne({ _id: userId, IsDeleted: false })
+        .select({ following: 1, _id: 0 })
         .lean();
     return user;
 }
 
 async function findFollowerUsers(userId) {
     const user = await schema.find({ _id: userId, IsDeleted: false })
-        .select({ followerList: 1, _id: 0 })
+        .select({ followers: 1, _id: 0 })
         .lean();
     return user;
 }

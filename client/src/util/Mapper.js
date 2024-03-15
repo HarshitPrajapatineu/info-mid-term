@@ -27,6 +27,7 @@ export const Mapper = ({
 }) => {
 
 
+    // NOTE: Mounting Phase
     // const rteRef = useRef < RichTextEditorRef > (null);
     const [value, setValue] = useState(defaultValue);
     const [compData, setCompData] = useState(data);
@@ -38,6 +39,10 @@ export const Mapper = ({
     const [paginationModel, setPaginationModel] = useState(options?.paginationModel);
     const [loading, setLoading] = useState(false);
 
+    // NOTE: to child to know that it has to render
+    useEffect(() => {
+        setCompData(data);
+    }, [data])
 
     const renderTextField = () => {
         const d = element.data
@@ -564,7 +569,9 @@ export const Mapper = ({
                 </CardContent>
 
                 <Box sx={{ display: 'flex', alignItems: 'center', padding: "24px" }}>
-                    <Button variant="contained" startIcon={<Icon>{"edit_icon"}</Icon>}>
+                    <Button variant="contained"
+                        onClick={() => { onEvent({ action: "edit", id: compData?._id }); }}
+                        startIcon={<Icon>{"edit_icon"}</Icon>}>
                         Edit Profile
                     </Button>
                 </Box>

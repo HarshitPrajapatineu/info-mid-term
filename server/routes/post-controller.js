@@ -80,7 +80,7 @@ router.post('/getFeedData', async function (req, res) {
 router.get('/getUserPosts', async function (req, res) {
 
   const userId = req.user.id;
-  const posts = await postManager.getPostsForFeed(userId);
+  const posts = await postManager.getPostsForUser(userId);
   res.send(RS.RBData200OK(posts));
 });
 

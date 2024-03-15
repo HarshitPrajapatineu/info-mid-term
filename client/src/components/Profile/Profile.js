@@ -52,39 +52,30 @@ const Profile = () => {
     }
   }
 
+  
+  const getActionHandler = (res) => {
+    switch (res?.action) {
+      case "edit":
+        return handleEditButton(res?.id);
+      default:
+        break;
+    }
+  };
+
+  
+
+  const handleEditButton = (id) => {
+    window.location.href = "/dashboard/usereditor?id=" + id;
+  }
+
   return (
     <div className="Profile">
       <Container sx={{ mt: 4, mb: 4 }}>
         <Box alignItems={"center"}>
-          {/* <Card sx={{ display: 'flex' }}>
-
-            <Box sx={{ display: 'flex', alignItems: 'center', padding: "16px" }}>
-
-              <Avatar sx={{ width: 64, height: 64 }} src="/broken-image.jpg" />
-            </Box>
-
-            <CardContent sx={{ flex: '1 0 auto' }}>
-              <Typography component="div" variant="h5">
-                Live From Space
-              </Typography>
-              <Typography variant="subtitle1" color="text.secondary" component="div">
-                Admin
-              </Typography>
-              <Typography variant="subtitle1" color="text.secondary" component="div">
-                Email@example.com
-              </Typography>
-            </CardContent>
-            <Box sx={{ display: 'flex', alignItems: 'center',padding: "16px"}}>
-
-              <Button  variant="contained" startIcon={<Icon>{"edit_icon"}</Icon>}>
-                Edit Profile
-              </Button>
-            </Box>
-          </Card> */}
-
           {
             design && design.map(element => <Mapper
               element={element}
+              onEvent={(res) => getActionHandler(res)}
               data={setCompData(element.type)}
               options={{ paginationModel: paginationModel, setPaginationModel: setPaginationModel }} />)
 

@@ -8,12 +8,12 @@ const postObj = {
     description: String,
     enablelike: String,
     createdOn: Date,
-    createdBy: ObjectId,
+    createdBy: String,
     modifiedOn: Date,
-    modifiedBy: ObjectId,
+    modifiedBy: String,
     postRole: String,
     IsDeleted: Boolean,
-    likedBy: [{ type: ObjectId, ref: 'Users' }]
+    likedBy: [{ type: String, ref: 'Users' }]
 }
 const postSchema = new mongoose.Schema(postObj)
 
@@ -115,33 +115,26 @@ async function getPostCount() {
 async function findPostByUserIds(userIds, userId) {
     let res;
     try {
-        res = await schema.aggregate([
-            {
-                $match:
-                    userIds ? { createdBy: { $in: userIds }, IsDeleted: false } : { IsDeleted: false }
-            },
-            {
-                $addFields: {
-                    likeCount: { $size: '$likedBy' },
-                    isLiked: { $in: [new ObjectId(userId), '$likedBy'] }  // Calculate like count using the $size operator
-                }
-            },
-            {
-                $project: {
-                    likedBy: 0, // Exclude the 'likes' field from the output if not needed
-                    IsDeleted: 0,
-                    modifiedBy: 0,
-                    modifiedOn: 0,
-                    __v: 0
-                }
-            },
-            {
-                $limit: 10
-            },
-            {
-                $sort: { createdOn: -1 }
-            }
-        ]);
+        console.log(userIds);
+        res = await schema.aggregate()
+            .match(
+                userIds ? { 'createdBy': { $in: userIds }, IsDeleted: false } : { IsDeleted: false }
+                // userIds ? {  $in:[createdBy, userIds?.following] , IsDeleted: false } : { IsDeleted: false }
+            )
+            .addFields({
+                likeCount: { $size: '$likedBy' },
+                isLiked: { $in: [userId, '$likedBy'] }  // Calculate like count using the $size operator
+            })
+            .project({
+                likedBy: 0, // Exclude the 'likes' field from the output if not needed
+                IsDeleted: 0,
+                modifiedBy: 0,
+                modifiedOn: 0,
+                __v: 0
+            })
+            .limit(10)
+            .sort({ createdOn: -1 });
+
         return res;
     } catch (error) {
         console.error('Error fetching user:', error);
@@ -168,8 +161,8 @@ async function updateLike(postParam, user) {
 async function getPost(id) {
     let res;
     try {
-        return await schema.findOne({ _id: id, IsDeleted: false })
-            .select({ _id: 1, title: 1, description: 1, enablelike: 1}).lean();
+        return await schema.findOne({ _id: new ObjectId(id), IsDeleted: false })
+            .select({ _id: 1, title: 1, description: 1, enablelike: 1 }).lean();
     } catch (error) {
         console.error('Error fetching user:', error);
         return res;

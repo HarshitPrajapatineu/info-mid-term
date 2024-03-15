@@ -184,4 +184,21 @@ router.get('/get', async function (req, res) {
   res.send(RS.RBData200OK(users));
 });
 
+
+/**
+ * @openapi
+ * /api/users/get/:
+ *   post:
+ *     description: Welcome to swagger-jsdoc!
+ *     responses:
+ *       200:x`
+ *         description: List of Users.
+ */
+router.post('/get', async function (req, res) {
+
+  const { id } = req.body
+  const users = await userManager.getUserById(id);
+  res.send(RS.RBData200OK(users));
+});
+
 module.exports = router;

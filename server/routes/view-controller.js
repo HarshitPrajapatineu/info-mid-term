@@ -50,7 +50,8 @@ router.get('/:path', function (req, res, next) {
 const getAdminPath = (path) => {
   const pathlist = [
     "userroster",
-    "dashboard"
+    "dashboard",
+    "usereditor"
   ]
   if (pathlist.includes(path)) {
     // if (path === "userroster" || path === "dashboard") {

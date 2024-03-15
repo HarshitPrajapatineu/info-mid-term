@@ -18,9 +18,21 @@ async function getPostsForFeed(userId) {
     // *Find list of posts created by users from user schema and then fetch those posts and sort by creation time
     // -- Confusion in performance and which will be best for this usecase.
 
-    const userlist = await User.findFollowingUsers(userId);
+    let userlist = await User.findFollowingUsers(userId);
+    userlist.following.push(userId)
     
-    return await Post.findPostByUserIds(null, userId)
+    return await Post.findPostByUserIds(userlist?.following, userId)
+    // return Post.();
+}
+
+async function getPostsForUser(userId) {
+
+    //2 ways to do it:
+    // *Find list of users and then get all posts that they created and sort by creation time
+    // *Find list of posts created by users from user schema and then fetch those posts and sort by creation time
+    // -- Confusion in performance and which will be best for this usecase.
+    const userList = [userId]
+    return await Post.findPostByUserIds(userList, userId)
     // return Post.();
 }
 
@@ -51,5 +63,6 @@ module.exports = {
     updatePost,
     deletePost,
     updateLike,
-    getPost
+    getPost,
+    getPostsForUser
 };
