@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { Select as BaseSelect, selectClasses } from '@mui/base/Select';
 import { Option as BaseOption, optionClasses } from '@mui/base/Option';
 import PostCard from "../components/PostCard/PostCard";
+// import InfiniteScroll from "react-infinite-scroll-component";
 import StarterKit from "@tiptap/starter-kit";
 import {
     MenuButtonBold,
@@ -511,9 +512,14 @@ export const Mapper = ({
                 {/*
                 render post on iteration of coming data if data changes
                 */}
-                {
-                    console.log(compData)}{
-                    compData.map((pcard, idx) => {
+
+                {/* <InfiniteScroll
+                    dataLength={compData.length}
+                    next={this.fetchMoreData}
+                    hasMore={true}
+                    loader={<h4>Loading...</h4>}
+                > */}
+                    {compData.map((pcard, idx) => {
                         return (<>
                             <PostCard onDelete={(id) => handleDelete(id)} key={pcard?._id} data={pcard}>
 
@@ -522,7 +528,8 @@ export const Mapper = ({
                         </>
                         )
                     })
-                }
+                    }
+                {/* </InfiniteScroll> */}
             </Box>
         )
     }
