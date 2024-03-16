@@ -35,6 +35,30 @@ const Feed = () => {
 
   }, [])
 
+  
+
+  const getActionHandler = (res) => {
+    switch (res?.action) {
+      case "fetchmoredata":
+        return handleInfiniteScroll(res?.pagination);
+      default:
+        break;
+    }
+  };
+
+  const handleInfiniteScroll = (pagination) => {
+    API.post(FETCH_FEED_DATA, {pagination: pagination})
+      .then((response) => {
+        setCompData([...compData, response?.data?.data])
+      }, (error) => {
+        if (error.response?.status === 401 || error.response?.status === 403) {
+          localStorage.clear();
+          window.location.href = "/login"
+        }
+        console.log(error);
+      })
+  }
+
   return (
     <div className="Feed">
       <Container sx={{ mt: 4, mb: 4 }}>
@@ -44,6 +68,7 @@ const Feed = () => {
             design && design.map(element => <Mapper
               element={element}
               data={compData}
+              onEvent={(res) => getActionHandler(res)}
               options={{ paginationModel: paginationModel, setPaginationModel: setPaginationModel }} />)
 
           }

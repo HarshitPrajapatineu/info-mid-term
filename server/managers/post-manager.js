@@ -11,7 +11,7 @@ function getAllPosts() {
     return Post.findAllPost();
 }
 
-async function getPostsForFeed(userId) {
+async function getPostsForFeed(filterParams, userId) {
 
     //2 ways to do it:
     // *Find list of users and then get all posts that they created and sort by creation time
@@ -21,7 +21,7 @@ async function getPostsForFeed(userId) {
     let userlist = await User.findFollowingUsers(userId);
     userlist.following.push(userId)
     
-    return await Post.findPostByUserIds(userlist?.following, userId)
+    return await Post.findPostByUserIds(filterParams, userlist?.following, userId)
     // return Post.();
 }
 

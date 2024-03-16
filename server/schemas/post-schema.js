@@ -112,7 +112,11 @@ async function getPostCount() {
     }
 }
 
-async function findPostByUserIds(userIds, userId) {
+async function findPostByUserIds(filterParams, userIds, userId) {
+
+    const { pagination } = filterParams;
+    const page = pagination?.page ? pagination?.page : 0
+    const pageSize = pagination?.pageSize ? pagination?.pageSize : 10
     let res;
     try {
         console.log(userIds);
@@ -132,7 +136,8 @@ async function findPostByUserIds(userIds, userId) {
                 modifiedOn: 0,
                 __v: 0
             })
-            .limit(10)
+            .skip(page * pageSize)
+            .limit(pageSize)
             .sort({ createdOn: -1 });
 
         return res;

@@ -54,7 +54,8 @@ router.get('/getAllPosts', async function (req, res) {
 router.post('/getFeedData', async function (req, res) {
 
   const userId = req.user.id;
-  const posts = await postManager.getPostsForFeed(userId);
+  const params = req.body;
+  const posts = await postManager.getPostsForFeed(params, userId);
   res.send(RS.RBData200OK(posts));
 });
 
