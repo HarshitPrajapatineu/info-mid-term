@@ -58,7 +58,7 @@ const PostEditor = () => {
     let newData = compData;
     // console.log(compData);
     if (!enablelike) {
-      newData = {compData, enablelike: "yes" };
+      newData = {...compData, enablelike: "yes" };
       setCompData(newData);
     }
 
