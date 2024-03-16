@@ -30,7 +30,7 @@ const PostCard = ({ data, onDelete }) => {
           });
         }
       }, (error) => {
-        console.log(error);
+        
       })
   }
   const handleEditButton = () => {
@@ -44,7 +44,7 @@ const PostCard = ({ data, onDelete }) => {
           onDelete(cardData?._id)
         }
       }, (error) => {
-        console.log(error);
+        
       })
   }
 

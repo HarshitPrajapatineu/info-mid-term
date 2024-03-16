@@ -16,7 +16,7 @@ export const Initiator = ({
                     localStorage.clear();
                     window.location.href = "/login"
                 }
-                console.log(error);
+                
             })
 
     }, [])

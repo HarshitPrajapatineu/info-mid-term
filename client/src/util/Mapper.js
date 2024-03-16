@@ -406,7 +406,7 @@ export const Mapper = ({
         if (element?.data?.actions) {
             addActionColumn(element?.data?.actions)
         }
-        console.log(columns);
+        // console.log(columns);
         return columns;
     }
 
@@ -454,7 +454,7 @@ export const Mapper = ({
                     }
                 });
 
-                console.log(acts);
+                // console.log(acts);
                 return acts;
             }
         })
@@ -464,7 +464,7 @@ export const Mapper = ({
         compData.map((row, idx) => {
             rows.push({ ...row, id: row._id })
         });
-        console.log(rows);
+        // console.log(rows);
     }
 
     const renderTable = () => {
@@ -549,7 +549,7 @@ export const Mapper = ({
             fontSize: '0.875rem',
             fontWeight: '700',
         };
-        console.log(compData);
+        // console.log(compData);
         return (
             <Card sx={{ height: "200px", display: 'flex', mb: "24px" }}>
 

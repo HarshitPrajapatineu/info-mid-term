@@ -38,7 +38,7 @@ router.get('/:path', function (req, res, next) {
       }
       data = JSON.parse(file)
       // output the parsed data
-      // console.log("sssssss"+ data)
+      // // console.log("sssssss"+ data)
       res.send(responseBuilder.RBDesign200OK(data.design));
     })
   } catch (err) {

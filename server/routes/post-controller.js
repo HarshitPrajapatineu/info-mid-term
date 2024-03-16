@@ -125,10 +125,10 @@ router.post('/get', async function (req, res) {
 router.post('/save', async function (req, res, next) {
   try {
 
-    console.log(req.body);
+    // console.log(req.body);
     const post = await postManager.addNewPost(req.body, req.user);
-    console.log(req.user);
-    console.log(post);
+    // console.log(req.user);
+    // console.log(post);
     // res.redirect("/api/view/login");
     res.send(RS.RBData200OK(post));
   } catch (error) {
@@ -150,7 +150,7 @@ router.post('/updateLike', async function (req, res, next) {
   try {
 
     const post = await postManager.updateLike(req.body, req.user);
-    console.log(post);
+    // console.log(post);
     // res.redirect("/api/view/login");
     res.send(RS.RBData200OK(post));
   } catch (error) {
@@ -172,7 +172,7 @@ router.post('/update', async function (req, res, next) {
   try {
 
     const post = await postManager.updatePost(req.body, req.user);
-    console.log(post);
+    // console.log(post);
     // res.redirect("/api/view/login");
     res.send(RS.RBData200OK(post));
   } catch (error) {
@@ -194,7 +194,7 @@ router.post('/delete', async function (req, res, next) {
   try {
     const { id } = req.body;
     const post = await postManager.deletePost(id, req.user);
-    console.log(post);
+    // console.log(post);
     // res.redirect("/api/view/login");
     res.send(RS.RBData200OK(post));
   } catch (error) {

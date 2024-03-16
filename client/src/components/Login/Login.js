@@ -22,14 +22,14 @@ const Login = () => {
     }
     API.get(FETCH_LOGIN_VIEW)
       .then((response) => {
-        console.log(response);
+        
         setDesign(response?.data?.design)
       }, (error) => {
         if(error.response?.status === 401 || error.response?.status === 403) {
           localStorage.clear();
           window.location.href = "/login"
         }
-        console.log(error);
+        
       })
 
   }, [])
@@ -77,13 +77,13 @@ const Login = () => {
           } else {
             setDesign(showError(true, response?.statusText));
           }
-          console.log(response);
+          
         }, (error) => {
           if(error.response?.status === 401 || error.response?.status === 403) {
             localStorage.clear();
             window.location.href = "/login"
           }
-          console.log(error);
+          
           setDesign(showError(true, error.message));
         }).finally(() =>
           window.location.href = "/dashboard/feed")

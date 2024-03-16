@@ -23,7 +23,7 @@ const PostEditor = () => {
 
     Promise.all(urls)
       .then((responses) => {
-        console.log(responses);
+        // console.log(responses);
         setDesign(responses[0]?.data?.design)
         setCompData(responses[1] ? responses[1]?.data?.data : {})
       }, (error) => {
@@ -31,7 +31,7 @@ const PostEditor = () => {
           localStorage.clear();
           window.location.href = "/login"
         }
-        console.log(error);
+        
       })
 
   }, [])
@@ -55,10 +55,10 @@ const PostEditor = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const { title, description, enablelike } = compData;
-    let newData;
-    console.log(enablelike);
+    let newData = compData;
+    // console.log(compData);
     if (!enablelike) {
-      newData = { ...compData, enablelike: "yes" };
+      newData = {compData, enablelike: "yes" };
       setCompData(newData);
     }
 
@@ -70,7 +70,7 @@ const PostEditor = () => {
           if (response?.statusText === 'OK') {
             window.location.href = "/dashboard/feed"
           }
-          console.log(response);
+          
         }, (error) => {
           if (error.response?.status === 401 || error.response?.status === 403) {
             localStorage.clear();

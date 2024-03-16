@@ -31,7 +31,7 @@ async function followUser(followedUserId, userId) {
         // Add userId to the 'followers' list of the followedUser
         const res2 = await schema.findByIdAndUpdate(followedUserId, { $addToSet: { followers: userId } });
 
-        console.log('User followed successfully');
+        // console.log('User followed successfully');
 
         return res1 && res2;
     } catch (error) {
@@ -40,7 +40,7 @@ async function followUser(followedUserId, userId) {
     }
 }
 
-async function unfollowUser(unfollowedUserId, userId ) {
+async function unfollowUser(unfollowedUserId, userId) {
     try {
         // Remove unfollowedUserId from the 'following' list of the user
         const res1 = await schema.findByIdAndUpdate(userId, { $pull: { following: unfollowedUserId } });
@@ -48,10 +48,21 @@ async function unfollowUser(unfollowedUserId, userId ) {
         // Remove userId from the 'followers' list of the unfollowedUser
         const res2 = await schema.findByIdAndUpdate(unfollowedUserId, { $pull: { followers: userId } });
 
-        console.log('User unfollowed successfully');
+        // console.log('User unfollowed successfully');
         return res1 && res2;
     } catch (error) {
         console.error('Error unfollowing user:', error);
+        return false;
+    }
+}
+
+async function addPostRefToUser(userId, postId) {
+    try {
+        const res1 = await schema.findByIdAndUpdate(userId, { $addToSet: { posts: postId } });
+        // console.log('Post Ref added successfully');
+        return res1 && res2;
+    } catch (error) {
+        console.error('Error Adding Post Ref:', error);
         return false;
     }
 }
@@ -73,8 +84,8 @@ async function findfilteredUsers(filter, userId) {
     const regex = new RegExp(searchString, 'i') // i for case insensitive
     let users;
     try {
-        const userfollowingList = await schema.findOne({_id: new ObjectId(userId), IsDeleted: false}, {_id: 0, following:1}).lean();
-        console.log(userfollowingList);
+        const userfollowingList = await schema.findOne({ _id: new ObjectId(userId), IsDeleted: false }, { _id: 0, following: 1 }).lean();
+        // console.log(userfollowingList);
         users = await schema.aggregate()
             .match({
                 $or: [
@@ -237,5 +248,6 @@ module.exports = {
     deleteUser: deleteUser,
     findFollowerUsers: findFollowerUsers,
     findFollowingUsers: findFollowingUsers,
-    getUserCount: getUserCount
+    getUserCount: getUserCount,
+    addPostRefToUser: addPostRefToUser
 };

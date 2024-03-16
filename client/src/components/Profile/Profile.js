@@ -32,14 +32,14 @@ const Profile = () => {
         localStorage.clear();
         window.location.href = "/login"
       }
-      console.log(error);
+      
     })
 
   }, [])
 
 
   const setCompData = (type) => {
-    console.log(type);
+    // console.log(type);
     switch (type) {
       case "postcardlist":
         return postData

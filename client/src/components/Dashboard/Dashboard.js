@@ -27,7 +27,7 @@ const Dashboard = () => {
           localStorage.clear();
           window.location.href = "/login"
         }
-        console.log(error);
+        
       })
 
   }, [])

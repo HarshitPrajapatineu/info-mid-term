@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 
 const uri = "mongodb+srv://admin:admin@test-cluster-damg.cpb7twp.mongodb.net/?retryWrites=true&w=majority";
 
-mongoose.connect(uri).then(console.log('Connected to Mongo DB'));
+mongoose.connect(uri).then(// console.log('Connected to Mongo DB'));
 
 
 const client = createClient({

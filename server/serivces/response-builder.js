@@ -35,7 +35,7 @@ function RBData200OK(data) {
 
 function RBDesign200OK(design) {
 
-    console.log('aaaaa' + design);
+    // console.log('aaaaa' + design);
     return {
         data: null,
         design: design,
@@ -54,7 +54,7 @@ function RBData401Unauthorized(data) {
 
 function RBDesign401Unauthorized(design) {
 
-    console.log('aaaaa' + design);
+    // console.log('aaaaa' + design);
     return {
         data: null,
         design: design,

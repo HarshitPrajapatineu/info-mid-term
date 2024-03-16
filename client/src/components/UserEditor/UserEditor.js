@@ -22,16 +22,16 @@ const UserEditor = () => {
     API.get(FETCH_USER_EDITOR_VIEW),
     API.post(FETCH_USER_DATA, {id:editUserId})
   ])      .then((responses) => {
-        console.log(responses);
+        // console.log(responses);
         setDesign(responses[0]?.data?.design);
-        console.log(responses[1]?.data?.data);
+        // console.log(responses[1]?.data?.data);
         setCompData(responses[1]?.data?.data);
       }, (error) => {
         if(error.response?.status === 401 || error.response?.status === 403) {
           localStorage.clear();
           window.location.href = "/login"
         }
-        console.log(error);
+        
       })
 
   }, [])
@@ -60,15 +60,15 @@ const UserEditor = () => {
         .then((response) => {
           setDesign(showError(false, null));
           if (response?.statusText === 'OK') {
-            window.location.href = "/dashboard/search"
+            window.location.href = "/dashboard/profile"
           }
-          console.log(response);
+          
         }, (error) => {
           if(error.response?.status === 401 || error.response?.status === 403) {
             localStorage.clear();
             window.location.href = "/login"
           }
-          console.log(error);
+          
           setDesign(showError(true, error.message));
         })
     } else {

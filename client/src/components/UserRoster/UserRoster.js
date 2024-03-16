@@ -40,7 +40,7 @@ const UserRoster = ({ view }) => {
         localStorage.clear();
         window.location.href = "/login"
       }
-      console.log(error);
+      
     })
 
   }, [])
@@ -75,7 +75,7 @@ const UserRoster = ({ view }) => {
           localStorage.clear();
           window.location.href = "/login"
         }
-        console.log(error);
+        
       })
   }
 
@@ -98,7 +98,7 @@ const UserRoster = ({ view }) => {
         localStorage.clear();
         window.location.href = "/login"
       }
-      console.log(error);
+      
     })
   }
 
@@ -111,7 +111,7 @@ const UserRoster = ({ view }) => {
             setCompData([...compData])
         }
       }, (error) => {
-        console.log(error);
+        
       })
   }
 
@@ -124,7 +124,7 @@ const UserRoster = ({ view }) => {
             setCompData([...compData])
         }
       }, (error) => {
-        console.log(error);
+        
       })
   }
 

@@ -55,7 +55,7 @@ async function createNewPost(postParam, user) {
             modifiedBy: user.id,
             IsDeleted: false
         })
-        await post.save();
+        const res = await post.save();
     } catch (error) {
         console.error('Error creating post:', error);
     }
@@ -75,7 +75,7 @@ async function updatePost(postParam, user) {
             modifiedBy: user.id,
         })
 
-        console.log(output);
+        // console.log(output);
     } catch (error) {
         console.error('Error updating post:', error);
     }
@@ -98,7 +98,7 @@ async function deletePost(id, user) {
 
     }
 
-    console.log(output);
+    // console.log(output);
     return output;
 }
 
@@ -115,7 +115,7 @@ async function getPostCount() {
 async function findPostByUserIds(userIds, userId) {
     let res;
     try {
-        console.log(userIds);
+        // console.log(userIds);
         res = await schema.aggregate()
             .match(
                 userIds ? { 'createdBy': { $in: userIds }, IsDeleted: false } : { IsDeleted: false }

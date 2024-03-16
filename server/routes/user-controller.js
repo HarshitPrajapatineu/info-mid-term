@@ -35,9 +35,9 @@ router.get('/getAllUsers', function (req, res) {
 router.post('/register', async function (req, res, next) {
   try {
 
-    console.log(req.body);
+    // console.log(req.body);
     const user = await userManager.addNewUser(req.body);
-    console.log(user);
+    // console.log(user);
     // res.redirect("/api/view/login");
     res.send(RS.RBData200OK(user));
   } catch (error) {
@@ -58,9 +58,9 @@ router.post('/register', async function (req, res, next) {
 router.post('/update', async function (req, res, next) {
   try {
 
-    console.log(req.body);
+    // console.log(req.body);
     const user = await userManager.updateUser(req.body, req.user);
-    console.log(user);
+    // console.log(user);
     // res.redirect("/api/view/login");
     res.send(RS.RBData200OK(user));
   } catch (error) {
@@ -81,9 +81,9 @@ router.post('/update', async function (req, res, next) {
 router.post('/delete', async function (req, res, next) {
   try {
 
-    console.log(req.body);
+    // console.log(req.body);
     const user = await userManager.deleteUser(req.body.id, req.user);
-    console.log(user);
+    // console.log(user);
     // res.redirect("/api/view/login");
     res.send(RS.RBData200OK(user));
   } catch (error) {
@@ -104,9 +104,9 @@ router.post('/delete', async function (req, res, next) {
 router.post('/follow', async function (req, res, next) {
   try {
 
-    console.log(req.body);
+    // console.log(req.body);
     const user = await userManager.followUser(req.body.id, req.user.id);
-    console.log(user);
+    // console.log(user);
     // res.redirect("/api/view/login");
     res.send(RS.RBData200OK(user));
   } catch (error) {
@@ -127,9 +127,9 @@ router.post('/follow', async function (req, res, next) {
 router.post('/unfollow', async function (req, res, next) {
   try {
 
-    console.log(req.body);
+    // console.log(req.body);
     const user = await userManager.unfollowUser(req.body.id, req.user.id);
-    console.log(user);
+    // console.log(user);
     // res.redirect("/api/view/login");
     res.send(RS.RBData200OK(user));
   } catch (error) {

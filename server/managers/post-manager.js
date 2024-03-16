@@ -4,7 +4,12 @@ const User = require('../schemas/user-schema');
 
 
 async function addNewPost(postParam, user) {
-    return await Post.createNewPost(postParam, user);
+    const post = await Post.createNewPost(postParam, user);
+
+    if (post) {
+        await User.addPostRefToUser(user.id, post._id);
+    }
+    return post
 }
 
 function getAllPosts() {
@@ -20,7 +25,7 @@ async function getPostsForFeed(userId) {
 
     let userlist = await User.findFollowingUsers(userId);
     userlist.following.push(userId)
-    
+
     return await Post.findPostByUserIds(userlist?.following, userId)
     // return Post.();
 }
